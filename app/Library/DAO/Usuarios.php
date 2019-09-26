@@ -38,5 +38,13 @@ class Usuarios extends Model
         ]);
 
     }
+
+    public function scopeCreateUser($query, $nombre, $apellido, $correo, $telefono, $celular){
+
+        Log::info("[Usuarios][scopeCreateUser]");
+
+
+    }
+
 }
 ?>

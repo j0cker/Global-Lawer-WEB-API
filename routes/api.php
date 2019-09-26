@@ -13,5 +13,20 @@ use Illuminate\Http\Request;
 |
 */
 
+/*
+**** End Points Generales ****
+*/
+
 //Ingresar User
 Route::get('/ingresar', 'API@Ingresar');
+
+/* 
+**** End Points Normal User ****
+*/
+
+//registro usuarios normales
+Route::get('/normal_user/registrar', 'APIUserNormal@Registrar');
+
+/* 
+**** End Points Abogados ****
+*/

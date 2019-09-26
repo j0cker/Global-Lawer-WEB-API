@@ -17,38 +17,47 @@ use App\Library\VO\ResponseJSON;
 use Session;
 use Validator;
 
-class API extends Controller
+class APIUserNormal extends Controller
 {
 
-    public function Ingresar(Request $request){
+    public function Registrar(Request $request){
       
-        Log::info('[API][ingresar]');
+        Log::info('[APIUserNormal][registrar]');
 
-        Log::info("[API][ingresar] Método Recibido: ". $request->getMethod());
+        Log::info("[APIUserNormal][registar] Método Recibido: ". $request->getMethod());
 
 
-        if($request->isMethod('GET')) {
-            
+        if($request->isMethod('POST')) {
+
             header('Access-Control-Allow-Origin: *');
             header('Access-Control-Allow-Methods: *');
             header('Access-Control-Allow-Headers: *');
 
             Validator::make($request->all(), [
+                'nombre' => 'required',
+                'apellido' => 'required',
                 'correo' => 'required',
-                'contPass' => 'required'
+                'telefono' => 'required',
+                'cel' => 'required',
               ])->validate();
             
+            $nombre = $request->input('nombre');
+            $apellido = $request->input('apellido');
             $correo = $request->input('correo');
-            $contPass = $request->input('contPass');
+            $telefono = $request->input('telefono');
+            $cel = $request->input('cel');
         
-            Log::info("[APIAdmin][ingresar] correo: ". $correo);
-            Log::info("[APIAdmin][ingresar] contPass: ". $contPass);
-
+            Log::info("[APIUserNormal][registar] nombre: ". $nombre);
+            Log::info("[APIUserNormal][registar] apellido: ". $apellido);
+            Log::info("[APIUserNormal][registar] correo: ". $correo);
+            Log::info("[APIUserNormal][registar] telefono: ". $telefono);
+            Log::info("[APIUserNormal][registar] cel: ". $cel);
+        
                 
-            $usuario = Usuarios::lookForByEmailAndPass($correo, $contPass)->get();
+            $usuario = Usuarios::createUser($nombre, $apellido, $correo, $telefono, $cel);
             Log::info($usuario);
     
-            if(count($usuario)>0){
+            if($usuario == 1){
 
                 $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario->first()->id_usuarios)->get();
                 $permisos_inter = array();
@@ -75,10 +84,10 @@ class API extends Controller
                 Log::info("[API][ingresar] new token: ". $jwt_token->get());
                 Log::info("[API][ingresar] Permisos: ");
                 Log::info($permisos_inter);
-        
+                
                 $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
                 $responseJSON->data = $usuario;
-                $responseJSON->token = $jwt_token->get();
+                $responseJSON->token = $token->get();
                 return json_encode($responseJSON);
         
             
