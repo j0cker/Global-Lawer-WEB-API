@@ -27,11 +27,12 @@ class APIUserNormal extends Controller
         Log::info("[APIUserNormal][registar] Método Recibido: ". $request->getMethod());
 
 
-        if($request->isMethod('POST')) {
+        if($request->isMethod('GET')) {
 
             header('Access-Control-Allow-Origin: *');
             header('Access-Control-Allow-Methods: *');
             header('Access-Control-Allow-Headers: *');
+/*
 
             Validator::make($request->all(), [
                 'nombre' => 'required',
@@ -40,24 +41,28 @@ class APIUserNormal extends Controller
                 'telefono' => 'required',
                 'cel' => 'required',
               ])->validate();
+  */    
+              //Log::info('[APIUserNormal][registrar]2');
             
             $nombre = $request->input('nombre');
             $apellido = $request->input('apellido');
             $correo = $request->input('correo');
             $telefono = $request->input('telefono');
             $cel = $request->input('cel');
+            $pass = $request->input('pass');
         
             Log::info("[APIUserNormal][registar] nombre: ". $nombre);
             Log::info("[APIUserNormal][registar] apellido: ". $apellido);
             Log::info("[APIUserNormal][registar] correo: ". $correo);
             Log::info("[APIUserNormal][registar] telefono: ". $telefono);
             Log::info("[APIUserNormal][registar] cel: ". $cel);
+            Log::info("[APIUserNormal][registar] password: ". $pass);
         
                 
-            $usuario = Usuarios::createUser($nombre, $apellido, $correo, $telefono, $cel);
+            $usuario = Usuarios::createUser($nombre, $apellido, $correo, $telefono, $cel, $pass);
             Log::info($usuario);
     
-            if($usuario == 1){
+            if($usuario[0]->save == 1){
 
                 $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario->first()->id_usuarios)->get();
                 $permisos_inter = array();

@@ -39,11 +39,26 @@ class Usuarios extends Model
 
     }
 
-    public function scopeCreateUser($query, $nombre, $apellido, $correo, $telefono, $celular){
+    public function scopeCreateUser($query, $nombre, $apellido, $correo, $telefono, $cel, $pass){
 
         Log::info("[Usuarios][scopeCreateUser]");
 
+        $usuarios = new Usuarios();
 
+        $usuarios->nombre = $nombre;
+        $usuarios->apellido = $apellido;
+        $usuarios->correo = $correo;
+        $usuarios->cargo = '';
+        $usuarios->telefono_fijo = $telefono;
+        $usuarios->celular = $cel;
+        $usuarios->pass = hash("sha256", $pass);
+
+        $obj = Array();
+        $obj[0] = new \stdClass();
+        $obj[0]->save = $usuarios->save(); //return true in the other one return 1
+        $obj[0]->id = $usuarios->id;
+
+        return $obj;
     }
 
 }
