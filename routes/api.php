@@ -25,7 +25,7 @@ Route::get('/ingresar', 'API@Ingresar');
 */
 
 //registro usuarios normales
-Route::get('/normal_user/registrar', 'APIUserNormal@Registrar');
+Route::post('/normal_user/registrar', 'APIUserNormal@Registrar');
 
 /* 
 **** End Points Abogados ****
