@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 /*
 **** End Points Generales ****
 */
-
+ 
 //Ingresar User
 Route::get('/ingresar', 'API@Ingresar');
 
