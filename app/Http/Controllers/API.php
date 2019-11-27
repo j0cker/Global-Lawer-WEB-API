@@ -96,4 +96,5 @@ class API extends Controller
             abort(404);
         }
     }
+
 }

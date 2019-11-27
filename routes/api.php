@@ -24,9 +24,15 @@ Route::get('/ingresar', 'API@Ingresar');
 **** End Points Normal User ****
 */
 
-//registro usuarios normales
+// Registro usuarios normales
 Route::get('/normal_user/registrar', 'APIUserNormal@Registrar');
+// Verificación de cedula profesional
+Route::get('/normal_user/verifyCedula', 'APIUserNormal@VerifyCedula');
 
 /* 
 **** End Points Abogados ****
 */
+// Registro usuarios normales
+Route::get('/lawyer/registrar', 'APILawyer@Registrar');
+// Show de abogados
+Route::get('/lawyer/abogadosCards', 'APILawyer@AbogadosCards');

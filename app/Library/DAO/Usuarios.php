@@ -5,6 +5,7 @@ use Config;
 use App;
 use Log;
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 /*
 
