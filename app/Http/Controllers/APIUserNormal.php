@@ -49,14 +49,14 @@ class APIUserNormal extends Controller
 
             if($response->response->numFound!=0){
                     
-                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($obj[0]->num_found));
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
                 $responseJSON->data = $obj;
                 return json_encode($responseJSON);
         
             
 
             } else {
-                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($obj[0]->num_found));
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), 0);
                 $responseJSON->data = $obj;
                 return json_encode($responseJSON);
         
