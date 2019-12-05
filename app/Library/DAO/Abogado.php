@@ -21,8 +21,7 @@ class Abogado extends Model
     //public $attributes;
 
 
-    public function scopeLookForByEmailAndPass($query, $email, $pass)
-    {
+    public function scopeLookForByEmailAndPass($query, $email, $pass){
 
         Log::info("[Abogado][scopeLookForByEmailAndPass]");
 
@@ -37,8 +36,7 @@ class Abogado extends Model
 
     }
 
-    public function scopeAbogadosCards($query)
-    {
+    public function scopeAbogadosCards($query){
 
         Log::info("[Usuarios][scopeLookForByEmailAndPass]");
 
@@ -60,7 +58,30 @@ class Abogado extends Model
 
     }
 
-    public function scopeCreateUser($query, $correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $mesInicio, $anoInicio, $mesTermino, $anoTermino){
+    public function scopeGetProfile($query, $id_user){
+
+        Log::info("[Abogado][scopeGetProfile]");
+
+        // $pass = hash("sha256", $pass);
+
+
+        //activar log query
+        DB::connection()->enableQueryLog();
+
+        $sql = $query->where([
+          ['id_abogado', '=', $id_user],
+        ])->get();
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+
+    }
+
+    public function scopeCreateUser($query, $correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $mesTermino, $anoTermino){
 
         Log::info("[Abogado][scopeCreateUser]");
 
@@ -82,8 +103,6 @@ class Abogado extends Model
         $usuarios->latitud = $lat;
         $usuarios->escuela = $escuela;
         $usuarios->carrera = $carrera;
-        $usuarios->mesInicio = $mesInicio;
-        $usuarios->anoInicio = $anoInicio;
         $usuarios->mesTermino = $mesTermino;
         $usuarios->anoTermino = $anoTermino;
         

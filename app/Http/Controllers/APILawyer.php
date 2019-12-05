@@ -49,8 +49,6 @@ class APILawyer extends Controller
             $lat = $request->input('lat');
             $escuela = $request->input('escuela');
             $carrera = $request->input('carrera');
-            $mesInicio = $request->input('mesInicio');
-            $anoInicio = $request->input('anoInicio');
             $mesTermino = $request->input('mesTermino');
             $anoTermino = $request->input('anoTermino');
 
@@ -70,12 +68,10 @@ class APILawyer extends Controller
             Log::info("[APILawyer][registar] Latitud: ". $lat);
             Log::info("[APILawyer][registar] Escuela: ". $escuela);
             Log::info("[APILawyer][registar] Carrera: ". $carrera);
-            Log::info("[APILawyer][registar] Mes de Inicio: ". $mesInicio);
-            Log::info("[APILawyer][registar] Año de Inicio: ". $anoInicio);
             Log::info("[APILawyer][registar] Mes de Termino: ". $mesTermino);
             Log::info("[APILawyer][registar] Año de Termino: ". $anoTermino);
 
-            $usuario = Abogado::createUser($correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $mesInicio, $anoInicio, $mesTermino, $anoTermino);
+            $usuario = Abogado::createUser($correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $mesTermino, $anoTermino);
             Log::info($usuario);
 
             if($usuario[0]->save == 1) {
@@ -179,6 +175,89 @@ class APILawyer extends Controller
             
         } else {
             abort(404);
+        }
+    }
+
+    public function GetProfile(Request $request) {
+     
+        Log::info('[APILawyer][GetProfile]');
+
+        Log::info("[APILawyer][GetProfile] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: *');
+            header('Access-Control-Allow-Headers: *');
+
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            
+            $token = $request->input('token');
+            $id_user = $request->input('id_user');
+
+            Log::info("[APILawyer][GetProfile] Token: ". $token);
+            Log::info("[APILawyer][GetProfile] ID User: ". $id_user);
+
+            try {
+
+                // attempt to verify the credentials and create a token for the user
+                $token = JWTAuth::getToken();
+                $token_decrypt = JWTAuth::getPayload($token)->toArray();
+
+                if(in_array(1, $token_decrypt["permisos"])){
+                    // $id_usuarios = $token_decrypt["usr"]->id_usuarios;   
+                    $usuario = Abogado::getProfile($id_user);
+                
+                    Log::info($usuario);
+            
+                    if(count($usuario)>0){
+                    
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    return json_encode($responseJSON);
+            
+                    } else {
+            
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($usuario));
+                    $responseJSON->data = [];
+                    return json_encode($responseJSON);
+            
+                    }
+
+                } else{
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), 0);
+                    $responseJSON->data = [];
+                    return json_encode($responseJSON);
+                }
+        
+              } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+        
+                //token_expired
+            
+                Log::info('[APILawyer][GetIdiomaObtener] Token error: token_expired');
+        
+                return redirect('/');
+          
+              } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+        
+                //token_invalid
+            
+                Log::info('[APILawyer][GetIdiomaObtener] Token error: token_invalid');
+        
+                return redirect('/');
+          
+              } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+        
+                //token_absent
+            
+                Log::info('[APILawyer][GetIdiomaObtener] Token error: token_absent');
+        
+                return redirect('/');
+          
+              }
+
         }
     }
 

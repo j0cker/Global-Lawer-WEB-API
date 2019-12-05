@@ -12,7 +12,8 @@
         "laravel/tinker": "~1.0",
         "php-http/curl-client": "^1.7",
         "irazasyed/jwt-auth-guard": "^1.0",
-        "tymon/jwt-auth": "^1.0@dev"
+        "tymon/jwt-auth": "^1.0@dev",
+        "twilio/sdk": "^5.0"
     },
     "require-dev": {
         "filp/whoops": "~2.0",

@@ -16,6 +16,7 @@ use App\Library\DAO\Permisos_inter;
 use App\Library\VO\ResponseJSON;
 use Session;
 use Validator;
+use App\Library\CLASSES\SMS;
 
 class API extends Controller
 {
@@ -92,6 +93,103 @@ class API extends Controller
     
             return "";
             
+        } else {
+            abort(404);
+        }
+    }
+
+    public function SMS(Request $request){
+
+        Log::info('[APIUsuarios][SMS]');
+
+        Log::info("[APIUsuarios][SMS] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')){
+
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: *');
+            header('Access-Control-Allow-Headers: *');
+
+            $celular = $request->input('celular');
+            Log::info('[APIUsuarios][VerificarSMS] Celular: ' . $celular);
+
+            $sms = new SMS();
+            $status = $sms->verifyNumber('+52'. $celular);
+            Log::info('[APIUsuarios][SMS] Mensaje enviado');
+
+            $obj = Array();
+            $obj[0] = new \stdClass();
+            $obj[0]->status = $status; //return true in the other one return 1
+
+            Log::info('[APIUserNormal][VerificarSMS] Status de Retorno: ' . $status);
+
+            if($status === 'pending'){
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.SendSMS'), count($obj[0]->status));
+                $responseJSON->data = $obj;
+                return json_encode($responseJSON);
+        
+            
+
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsSendSMS'), count($obj[0]->status));
+                $responseJSON->data = $obj;
+                return json_encode($responseJSON);
+        
+            }
+
+
+
+        } else {
+            abort(404);
+        }
+    }
+
+    public function VerificarSMS(Request $request){
+
+        Log::info('[APIUsuarios][VerificarSMS]');
+
+        Log::info("[APIUsuarios][VerificarSMS] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')){
+
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: *');
+            header('Access-Control-Allow-Headers: *');
+
+            $code = $request->input('code');
+            $celular = $request->input('celular');
+            Log::info('[APIUsuarios][VerificarSMS] Código: ' . $code);
+            Log::info('[APIUsuarios][VerificarSMS] Celular: ' . $celular);
+
+            $sms = new SMS();
+            $status = $sms->verifyCode($code, '+52'.$celular);
+            Log::info('[APIUsuarios][VerificarSMS] Verificacion de Código');
+
+            
+            $obj = Array();
+            $obj[0] = new \stdClass();
+            $obj[0]->status = $status; //return true in the other one return 1
+
+            Log::info('[APIUserNormal][VerificarSMS] Status de Retorno: ' . $status);
+
+            if($status === 'approved'){
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.VerifiedCode'), count($obj[0]->status));
+                $responseJSON->data = $obj;
+                return json_encode($responseJSON);
+        
+            
+
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsVerifiedCode'), count($obj[0]->status));
+                $responseJSON->data = $obj;
+                return json_encode($responseJSON);
+        
+            }
+
+            // return $response;
+
         } else {
             abort(404);
         }
