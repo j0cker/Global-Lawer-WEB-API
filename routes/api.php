@@ -32,6 +32,8 @@ Route::get('/verifyCode', 'API@VerificarSMS');
 Route::get('/normal_user/registrar', 'APIUserNormal@Registrar');
 // Verificación de cedula profesional
 Route::get('/normal_user/verifyCedula', 'APIUserNormal@VerifyCedula');
+// Get Perfil abogados
+Route::get('/normal_user/getProfile', 'APIUserNormal@GetProfile');
 
 /* 
 **** End Points Abogados ****

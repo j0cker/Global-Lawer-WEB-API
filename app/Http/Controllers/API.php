@@ -12,6 +12,7 @@ use JWTFactory;
 use Tymon\JWTAuth\PayloadFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Library\DAO\Usuarios;
+use App\Library\DAO\Abogado;
 use App\Library\DAO\Permisos_inter;
 use App\Library\VO\ResponseJSON;
 use Session;
@@ -39,15 +40,28 @@ class API extends Controller
                 'contPass' => 'required'
               ])->validate();
             
+            $serviceT = $request->input('serviceT');
             $correo = $request->input('correo');
             $contPass = $request->input('contPass');
         
+            Log::info("[APIAdmin][ingresar] Tipo de Servicio: ". $serviceT);
             Log::info("[APIAdmin][ingresar] correo: ". $correo);
             Log::info("[APIAdmin][ingresar] contPass: ". $contPass);
 
-                
-            $usuario = Usuarios::lookForByEmailAndPass($correo, $contPass)->get();
-            Log::info($usuario);
+            if( $serviceT == 0 ){
+                Log::info("[APIAdmin][ingresar] Tipo de Servicio: Busco");
+
+                $usuario = Usuarios::lookForByEmailAndPass($correo, $contPass)->get();
+                Log::info($usuario);
+
+            } else if ( $serviceT == 1 ){
+                Log::info("[APIAdmin][ingresar] Tipo de Servicio: Ofrezo");
+
+                $usuario = Abogado::lookForByEmailAndPass($correo, $contPass)->get();
+                Log::info($usuario);
+
+            }
+
     
             if(count($usuario)>0){
 

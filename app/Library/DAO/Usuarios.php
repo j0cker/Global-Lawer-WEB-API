@@ -40,6 +40,29 @@ class Usuarios extends Model
 
     }
 
+    public function scopeGetProfile($query, $id_user){
+
+        Log::info("[Usuarios][scopeGetProfile]");
+
+        // $pass = hash("sha256", $pass);
+
+
+        //activar log query
+        DB::connection()->enableQueryLog();
+
+        $sql = $query->where([
+          ['id_usuarios', '=', $id_user],
+        ])->get();
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+
+    }
+
     public function scopeCreateUser($query, $nombre, $apellido, $correo, $telefono, $cel, $pass){
 
         Log::info("[Usuarios][scopeCreateUser]");
