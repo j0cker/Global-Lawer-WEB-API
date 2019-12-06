@@ -181,14 +181,14 @@ class API extends Controller
 
             if($status === 'pending'){
                     
-                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.SendSMS'), count($obj[0]->status));
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.SendSMS'), 0);
                 $responseJSON->data = $obj;
                 return json_encode($responseJSON);
         
             
 
             } else {
-                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsSendSMS'), count($obj[0]->status));
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsSendSMS'), 0);
                 $responseJSON->data = $obj;
                 return json_encode($responseJSON);
         
@@ -231,14 +231,14 @@ class API extends Controller
 
             if($status === 'approved'){
                     
-                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.VerifiedCode'), count($obj[0]->status));
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.VerifiedCode'), 0);
                 $responseJSON->data = $obj;
                 return json_encode($responseJSON);
         
             
 
             } else {
-                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsVerifiedCode'), count($obj[0]->status));
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsVerifiedCode'), 0);
                 $responseJSON->data = $obj;
                 return json_encode($responseJSON);
         
