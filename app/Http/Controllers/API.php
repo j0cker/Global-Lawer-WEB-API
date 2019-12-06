@@ -54,56 +54,98 @@ class API extends Controller
                 $usuario = Usuarios::lookForByEmailAndPass($correo, $contPass)->get();
                 Log::info($usuario);
 
+                if(count($usuario)>0){
+
+                    $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario->first()->id_usuarios)->get();
+                    $permisos_inter = array();
+                    foreach($permisos_inter_object as $permiso){
+                        $permisos_inter[] = $permiso["id_permisos"];
+                    }
+            
+                    $jwt_token = null;
+            
+                    $factory = JWTFactory::customClaims([
+                        'sub'   => $usuario->first()->id_usuarios, //id a conciliar del usuario
+                        'iss'   => config('app.name'),
+                        'iat'   => Carbon::now()->timestamp,
+                        'exp'   => Carbon::tomorrow()->timestamp,
+                        'nbf'   => Carbon::now()->timestamp,
+                        'jti'   => uniqid(),
+                        'usr'   => $usuario->first(),
+                        'permisos' => $permisos_inter,
+                    ]);
+                    
+                    $payload = $factory->make();
+                    
+                    $jwt_token = JWTAuth::encode($payload);
+                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
+                    Log::info("[API][ingresar] Permisos: ");
+                    Log::info($permisos_inter);
+            
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    $responseJSON->token = $jwt_token->get();
+                    return json_encode($responseJSON);
+            
+                
+        
+                } else {
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    return json_encode($responseJSON);
+            
+                }
+
             } else if ( $serviceT == 1 ){
                 Log::info("[APIAdmin][ingresar] Tipo de Servicio: Ofrezo");
 
                 $usuario = Abogado::lookForByEmailAndPass($correo, $contPass)->get();
                 Log::info($usuario);
 
-            }
+                if(count($usuario)>0){
 
-    
-            if(count($usuario)>0){
-
-                $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario->first()->id_usuarios)->get();
-                $permisos_inter = array();
-                foreach($permisos_inter_object as $permiso){
-                    $permisos_inter[] = $permiso["id_permisos"];
-                }
-        
-                $jwt_token = null;
-        
-                $factory = JWTFactory::customClaims([
-                    'sub'   => $usuario->first()->id_usuarios, //id a conciliar del usuario
-                    'iss'   => config('app.name'),
-                    'iat'   => Carbon::now()->timestamp,
-                    'exp'   => Carbon::tomorrow()->timestamp,
-                    'nbf'   => Carbon::now()->timestamp,
-                    'jti'   => uniqid(),
-                    'usr'   => $usuario->first(),
-                    'permisos' => $permisos_inter,
-                ]);
-                
-                $payload = $factory->make();
-                
-                $jwt_token = JWTAuth::encode($payload);
-                Log::info("[API][ingresar] new token: ". $jwt_token->get());
-                Log::info("[API][ingresar] Permisos: ");
-                Log::info($permisos_inter);
-        
-                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
-                $responseJSON->data = $usuario;
-                $responseJSON->token = $jwt_token->get();
-                return json_encode($responseJSON);
-        
+                    $permisos_inter_object = Permisos_inter::lookForByIdAbogado($usuario->first()->id_abogado)->get();
+                    $permisos_inter = array();
+                    foreach($permisos_inter_object as $permiso){
+                        $permisos_inter[] = $permiso["id_permisos"];
+                    }
             
-    
-            } else {
-                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
-                $responseJSON->data = $usuario;
-                return json_encode($responseJSON);
+                    $jwt_token = null;
+            
+                    $factory = JWTFactory::customClaims([
+                        'sub'   => $usuario->first()->id_abogado, //id a conciliar del usuario
+                        'iss'   => config('app.name'),
+                        'iat'   => Carbon::now()->timestamp,
+                        'exp'   => Carbon::tomorrow()->timestamp,
+                        'nbf'   => Carbon::now()->timestamp,
+                        'jti'   => uniqid(),
+                        'usr'   => $usuario->first(),
+                        'permisos' => $permisos_inter,
+                    ]);
+                    
+                    $payload = $factory->make();
+                    
+                    $jwt_token = JWTAuth::encode($payload);
+                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
+                    Log::info("[API][ingresar] Permisos: ");
+                    Log::info($permisos_inter);
+            
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    $responseJSON->token = $jwt_token->get();
+                    return json_encode($responseJSON);
+            
+                
         
+                } else {
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    return json_encode($responseJSON);
+            
+                }
+
             }
+
     
             return "";
             

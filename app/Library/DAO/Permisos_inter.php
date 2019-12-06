@@ -24,8 +24,7 @@ class Permisos_inter extends Model
     //public $attributes;
 
 
-    public function scopeLookForByIdUsuarios($query, $idUsuarios)
-    {
+    public function scopeLookForByIdUsuarios($query, $idUsuarios){
 
         Log::info("[Permisos_inter][scopeLookForByIdUsuarios] idUsuarios: ". $idUsuarios);
 
@@ -35,13 +34,12 @@ class Permisos_inter extends Model
 
     }
 
-    public function scopeLookForByIdLawyer($query, $idUsuarios)
-    {
+    public function scopeLookForByIdAbogado($query, $idAbogado){
 
-        Log::info("[Permisos_inter][scopeLookForByIdUsuarios] idUsuarios: ". $idUsuarios);
+        Log::info("[Permisos_inter][scopeLookForByIdAbogado] idAbogado: ". $idAbogado);
 
         return $query->select('id_permisos')->where([
-          ['id_usuarios', '=', $idUsuarios],
+          ['id_abogado', '=', $idAbogado],
         ]);
 
     }
@@ -53,6 +51,23 @@ class Permisos_inter extends Model
       $permisos_inter = new Permisos_inter();
 
       $permisos_inter->id_usuarios = $id_usuarios;
+      $permisos_inter->id_permisos = 1;
+
+      $obj = Array();
+      $obj[0] = new \stdClass();
+      $obj[0]->save = $permisos_inter->save(); //return true in the other one return 1
+      $obj[0]->id = $permisos_inter->id;
+
+      return $obj;
+    }
+
+    public function scopeCreatePermisoInterAbogado($query, $id_usuarios){
+
+      Log::info("[Permisos_inter][scopeCreatePermisoInterAbogado]");
+
+      $permisos_inter = new Permisos_inter();
+
+      $permisos_inter->id_abogado = $id_usuarios;
       $permisos_inter->id_permisos = 1;
 
       $obj = Array();

@@ -78,11 +78,11 @@ class APILawyer extends Controller
 
                 Log::info('[APILawyer][registar] Se registro el abogado en todas las tablas, creando permisos');
 
-                $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
+                $permisos_inter_object = Permisos_inter::createPermisoInterAbogado($usuario[0]->id);
 
                 if ($permisos_inter_object[0]->save == 1) {
 
-                    $permisos_inter_object = Permisos_inter::lookForByIdLawyer($usuario[0]->id)->get();
+                    $permisos_inter_object = Permisos_inter::lookForByIdAbogado($usuario[0]->id)->get();
                     $permisos_inter = array();
                     foreach($permisos_inter_object as $permiso){
                         $permisos_inter[] = $permiso["id_permisos"];
@@ -205,6 +205,8 @@ class APILawyer extends Controller
                 // attempt to verify the credentials and create a token for the user
                 $token = JWTAuth::getToken();
                 $token_decrypt = JWTAuth::getPayload($token)->toArray();
+
+                Log::info("Token permisos: " . print_r($token_decrypt["permisos"],true));
 
                 if(in_array(1, $token_decrypt["permisos"])){
                     // $id_usuarios = $token_decrypt["usr"]->id_usuarios;   

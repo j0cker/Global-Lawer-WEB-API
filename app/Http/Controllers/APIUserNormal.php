@@ -189,8 +189,8 @@ class APIUserNormal extends Controller
             $token = $request->input('token');
             $id_user = $request->input('id_user');
 
-            Log::info("[APILawyer][GetProfile] Token: ". $token);
-            Log::info("[APILawyer][GetProfile] ID User: ". $id_user);
+            Log::info("[APIUserNormal][GetProfile] Token: ". $token);
+            Log::info("[APIUserNormal][GetProfile] ID User: ". $id_user);
 
             try {
 
@@ -228,7 +228,7 @@ class APIUserNormal extends Controller
         
                 //token_expired
             
-                Log::info('[APILawyer][GetIdiomaObtener] Token error: token_expired');
+                Log::info('[APIUserNormal][GetIdiomaObtener] Token error: token_expired');
         
                 return redirect('/');
           
@@ -236,7 +236,7 @@ class APIUserNormal extends Controller
         
                 //token_invalid
             
-                Log::info('[APILawyer][GetIdiomaObtener] Token error: token_invalid');
+                Log::info('[APIUserNormal][GetIdiomaObtener] Token error: token_invalid');
         
                 return redirect('/');
           
@@ -244,7 +244,7 @@ class APIUserNormal extends Controller
         
                 //token_absent
             
-                Log::info('[APILawyer][GetIdiomaObtener] Token error: token_absent');
+                Log::info('[APIUserNormal][GetIdiomaObtener] Token error: token_absent');
         
                 return redirect('/');
           
