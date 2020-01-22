@@ -23,9 +23,9 @@ class APIUserNormal extends Controller
 
     public function VerifyCedula(Request $request) {
 
-        Log::info('[APIUserNormal][Prueba]');
+        Log::info('[APIUserNormal][VerifyCedula]');
 
-        Log::info("[APIUserNormal][Prueba] Método Recibido: ". $request->getMethod());
+        Log::info("[APIUserNormal][VerifyCedula] Método Recibido: ". $request->getMethod());
 
         if($request->isMethod('GET')) {
 
@@ -34,32 +34,50 @@ class APIUserNormal extends Controller
             header('Access-Control-Allow-Headers: *');
 
             $cedula = $request->input('cedula');
-            Log::info('[APIUserNormal][Prueba] Cédula: ' . $cedula);
+            Log::info('[APIUserNormal][VerifyCedula] Cédula: ' . $cedula);
+            Log::info('[APIUserNormal][VerifyCedula] Agent: ' . $request->header('User-Agent'));
+
+            //regresa objecto con content, status y content-type
+            $response = Curl::to('http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q='.$cedula.'&start=0&rows=100&facet=true&indent=on&wt=json')->withOption('USERAGENT', $request->header('User-Agent'))->returnResponseObject()->get();
+
+            Log::info('[APIUserNormal][VerifyCedula] Response Cedula:' . print_r($response, true));
 
 
-            $response = json_decode(Curl::to('http://search.sep.gob.mx/solr/cedulasCore/select?fl=%2A%2Cscore&q='.$cedula.'&start=0&rows=100&facet=true&indent=on&wt=json')->withOption('USERAGENT', $request->header('User-Agent'))->get());
+            if($response->status==200){
+                //debntro de content hay un json que hay que decodificar
+                $response = json_decode($response->content);
+                Log::info(print_r($response->response, true));
 
+                $obj = Array();
+                $obj[0] = new \stdClass();
+                $obj[0]->num_found = $response->response->numFound; //return true in the other one return 1
+                $obj[0]->docs = $response->response->docs;
 
-            $obj = Array();
-            $obj[0] = new \stdClass();
-            $obj[0]->num_found = $response->response->numFound; //return true in the other one return 1
-            $obj[0]->docs = $response->response->docs;
+                
 
-            //Log::info('[APIUserNormal][Prueba] Retorno: ' . print_r($obj));
+                //Log::info('[APIUserNormal][Prueba] Retorno: ' . print_r($obj));
 
-            if($response->response->numFound!=0){
-                    
-                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
-                $responseJSON->data = $obj;
-                return json_encode($responseJSON);
-        
+                if($response->response->numFound!=0){
+                        
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                    $responseJSON->data = $obj;
+                    return json_encode($responseJSON);
             
+                
+
+                } else {
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsCedula'), 0);
+                    $responseJSON->data = $obj;
+                    return json_encode($responseJSON);
+            
+                }
 
             } else {
-                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), 0);
-                $responseJSON->data = $obj;
-                return json_encode($responseJSON);
-        
+                //no status 200
+
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsCedula'), 0);
+                    $responseJSON->data = $obj;
+                    return json_encode($responseJSON);
             }
             
             //return $obj;

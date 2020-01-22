@@ -68,6 +68,6 @@ return [
     'errorsSendSMS' => "Error al enviar código de verificación.",
     'VerifiedCode' => "El código de verificación es correcto.",
     'errorsVerifiedCode' => "El código de verificación es incorrecto.",
-
+    'errorsCedula' => "La cédula profesional no existe.",
 
 ];
