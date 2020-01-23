@@ -47,3 +47,4 @@ Route::get('/lawyer/abogadosCards', 'APILawyer@AbogadosCards');
 
 // Get Perfil abogados
 Route::get('/lawyer/getProfile', 'APILawyer@GetProfile');
+Route::get('/lawyer/getLaw', 'APILawyer@GetLaw');

@@ -263,4 +263,50 @@ class APILawyer extends Controller
         }
     }
 
+    public function GetLaw(Request $request) {
+     
+        Log::info('[APILawyer][GetLaw]');
+
+        Log::info("[APILawyer][GetLaw] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: *');
+            header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            // $token = $request->input('token');
+            $cedula = $request->input('cedula');
+
+            // Log::info("[APILawyer][GetProfile] Token: ". $token);
+            Log::info("[APILawyer][GetLaw] Cedula Law: ". $cedula);
+
+            // $id_usuarios = $token_decrypt["usr"]->id_usuarios;   
+            $usuario = Abogado::getProfile2($cedula);
+        
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+            
+            $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+            $responseJSON->data = $usuario;
+            return json_encode($responseJSON);
+    
+            } else {
+    
+            $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($usuario));
+            $responseJSON->data = [];
+            return json_encode($responseJSON);
+    
+            }
+
+        }
+    }
+
 }

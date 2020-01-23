@@ -81,6 +81,29 @@ class Abogado extends Model
 
     }
 
+    public function scopeGetProfile2($query, $cedula){
+
+        Log::info("[Abogado][scopeGetProfile2]");
+
+        // $pass = hash("sha256", $pass);
+
+
+        //activar log query
+        DB::connection()->enableQueryLog();
+
+        $sql = $query->where([
+          ['cedula', '=', $cedula],
+        ])->get();
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+
+    }
+
     public function scopeCreateUser($query, $correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $mesTermino, $anoTermino){
 
         Log::info("[Abogado][scopeCreateUser]");
