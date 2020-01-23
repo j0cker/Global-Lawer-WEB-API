@@ -24,6 +24,7 @@ Route::get('/ingresar', 'API@Ingresar');
 Route::get('/enviarsms', 'API@SMS');
 Route::get('/verifyCode', 'API@VerificarSMS');
 Route::get('/sms', 'API@SMS2');
+Route::get('/smsConfirm', 'API@SMSConfirm');
 
 /* 
 **** End Points Normal User ****

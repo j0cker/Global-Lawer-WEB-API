@@ -18,6 +18,10 @@ class SMS
         // Your Account SID and Auth Token from twilio.com/console
         $this->account_sid = env('TWILIO_CLIENT_ID');
         $this->auth_token = env('TWILIO_AUTH_TOKEN');
+
+        $this->account_sid2 = env('TWILIO_CLIENT_ID2');
+        $this->auth_token2 = env('TWILIO_AUTH_TOKEN2');
+        
         // In production, these should be environment variables. E.g.:
         // $auth_token = $_ENV["TWILIO_AUTH_TOKEN"]
 
@@ -47,9 +51,29 @@ class SMS
         return $mensaje->status;
     }
 
+    public function smsConfirm($message, $cellNumber){
+
+        Log::info('[SMS][enviarMensaje]: account_sid: '. $this->account_sid);
+        Log::info('[SMS][enviarMensaje]: auth_token: '. $this->auth_token);
+        
+        $client = new Client($this->account_sid, $this->auth_token);
+
+        $mensaje = $client->messages->create(
+            // Where to send a text message (your cell phone?)
+            $cellNumber,
+            array(
+                'from' => $this->twilio_number,
+                'body' => $message
+            )
+        );
+
+        Log::info('[SMS][enviarMensaje] Status: '. $mensaje->status);
+        return $mensaje->status;
+    }
+
     public function verifyNumber($cellNumber){
 
-        $client = new Client($this->account_sid, $this->auth_token);
+        $client = new Client($this->account_sid2, $this->auth_token2);
 
         $verification = $client->verify->v2->services('VA49d513bf8d6a0054015159622ddf45b2')
         ->verifications
@@ -63,7 +87,7 @@ class SMS
 
     public function verifyCode($code, $cellNumber){
 
-        $client = new Client($this->account_sid, $this->auth_token);
+        $client = new Client($this->account_sid2, $this->auth_token2);
 
         $verification_check = $client->verify->v2->services('VA49d513bf8d6a0054015159622ddf45b2')
         ->verificationChecks

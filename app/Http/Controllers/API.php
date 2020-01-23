@@ -248,6 +248,53 @@ class API extends Controller
         }
     }
 
+    public function SMSConfirm(Request $request){
+
+        Log::info('[APIUsuarios][SMSConfirm]');
+
+        Log::info("[APIUsuarios][SMSConfirm] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')){
+
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: *');
+            header('Access-Control-Allow-Headers: *');
+
+            $celular = $request->input('celular');
+            Log::info('[APIUsuarios][SMSConfirm] Celular: ' . $celular);
+
+            $sms = new SMS();
+            $status = $sms->enviarMensaje('El numero de contacto de tu abogado es: ','+52'. $celular);
+            Log::info('[APIUsuarios][SMSConfirm] Mensaje enviado');
+
+            $obj = Array();
+            $obj[0] = new \stdClass();
+            $obj[0]->status = $status; //return true in the other one return 1
+
+            Log::info('[APIUserNormal][SMSConfirm] Retorno: ' . $status);
+
+            if($status === 'queued'){
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.SendSMS2'), 0);
+                $responseJSON->data = $obj;
+                return json_encode($responseJSON);
+        
+            
+
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsSendSMS2'), 0);
+                $responseJSON->data = $obj;
+                return json_encode($responseJSON);
+        
+            }
+
+
+
+        } else {
+            abort(404);
+        }
+    }
+
     public function VerificarSMS(Request $request){
 
         Log::info('[APIUsuarios][VerificarSMS]');
