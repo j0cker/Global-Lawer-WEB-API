@@ -66,6 +66,8 @@ return [
     'BDsentMail' => "Te hemos enviado un correo electrónico con tu nueva contraseña..",
     'SendSMS' => "Código de verificación enviado correctamente.",
     'errorsSendSMS' => "Error al enviar código de verificación.",
+    'SendSMS2' => "Mensaje enviado correctamente.",
+    'errorsSendSMS2' => "Error al enviar mensaje.",
     'VerifiedCode' => "El código de verificación es correcto.",
     'errorsVerifiedCode' => "El código de verificación es incorrecto.",
     'errorsCedula' => "La cédula profesional no existe.",

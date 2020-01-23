@@ -201,6 +201,53 @@ class API extends Controller
         }
     }
 
+    public function SMS2(Request $request){
+
+        Log::info('[APIUsuarios][SMS2]');
+
+        Log::info("[APIUsuarios][SMS2] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')){
+
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: *');
+            header('Access-Control-Allow-Headers: *');
+
+            $celular = $request->input('celular');
+            Log::info('[APIUsuarios][SMS2] Celular: ' . $celular);
+
+            $sms = new SMS();
+            $status = $sms->verifyNumber('+52'. $celular);
+            Log::info('[APIUsuarios][SMS2] Mensaje enviado');
+
+            $obj = Array();
+            $obj[0] = new \stdClass();
+            $obj[0]->status = $status; //return true in the other one return 1
+
+            Log::info('[APIUserNormal][SMS2] Retorno: ' . $status);
+
+            if($status === 'sent'){
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.SendSMS2'), 0);
+                $responseJSON->data = $obj;
+                return json_encode($responseJSON);
+        
+            
+
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsSendSMS2'), 0);
+                $responseJSON->data = $obj;
+                return json_encode($responseJSON);
+        
+            }
+
+
+
+        } else {
+            abort(404);
+        }
+    }
+
     public function VerificarSMS(Request $request){
 
         Log::info('[APIUsuarios][VerificarSMS]');

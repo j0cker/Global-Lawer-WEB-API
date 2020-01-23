@@ -23,6 +23,7 @@ Route::get('/ingresar', 'API@Ingresar');
 // Prueba SMS
 Route::get('/enviarsms', 'API@SMS');
 Route::get('/verifyCode', 'API@VerificarSMS');
+Route::get('/sms', 'API@SMS2');
 
 /* 
 **** End Points Normal User ****

@@ -33,7 +33,7 @@ class SMS
         Log::info('[SMS][enviarMensaje]: auth_token: '. $this->auth_token);
         $client = new Client($this->account_sid, $this->auth_token);
 
-        return $client->messages->create(
+        $mensaje = $client->messages->create(
             // Where to send a text message (your cell phone?)
             $cellNumber,
             array(
@@ -41,6 +41,9 @@ class SMS
                 'body' => $message
             )
         );
+
+        Log::info('[SMS][sendMessage] Status: '. $mensaje->status);
+        return $mensaje->status;
     }
 
     public function verifyNumber($cellNumber){
