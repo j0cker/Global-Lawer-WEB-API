@@ -226,7 +226,7 @@ class API extends Controller
 
             Log::info('[APIUserNormal][SMS2] Retorno: ' . $status);
 
-            if($status === 'sent'){
+            if($status === 'queued'){
                     
                 $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.SendSMS2'), 0);
                 $responseJSON->data = $obj;

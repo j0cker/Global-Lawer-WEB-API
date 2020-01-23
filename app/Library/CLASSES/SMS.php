@@ -31,6 +31,7 @@ class SMS
 
         Log::info('[SMS][enviarMensaje]: account_sid: '. $this->account_sid);
         Log::info('[SMS][enviarMensaje]: auth_token: '. $this->auth_token);
+        
         $client = new Client($this->account_sid, $this->auth_token);
 
         $mensaje = $client->messages->create(
@@ -42,7 +43,7 @@ class SMS
             )
         );
 
-        Log::info('[SMS][sendMessage] Status: '. $mensaje->status);
+        Log::info('[SMS][enviarMensaje] Status: '. $mensaje->status);
         return $mensaje->status;
     }
 
