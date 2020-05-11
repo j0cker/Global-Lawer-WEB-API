@@ -186,13 +186,35 @@ class APILawyer extends Controller
 
         if($request->isMethod('GET')) {
 
-            header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
 
-            Validator::make($request->all(), [
-                'token' => 'required'
-            ])->validate();
+
+            header('Access-Control-Allow-Origin: *');
+            //header('Access-Control-Allow-Methods: *');
+            //header('Access-Control-Allow-Headers: *');
+
+            $token = $request->header('Authorization');
+
+            Log::info('[APILawyer][GetProfile] XSRF: ' . print_r($token, true));
+            
+            
+
+            $request->merge(['token' => isset($token)? $token : '']);
+
+                    
+            $validator = Validator::make($request->all(), [ 
+                'token' => 'required',
+                'id_user' => 'required'
+                
+            ]);
+
+            if($validator->fails()){
+
+                Log::info('[APILawyer][GetProfile] fails');
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'), 'Faltan campos', 0);
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+                
+            }
             
             $token = $request->input('token');
             $id_user = $request->input('id_user');
