@@ -27,7 +27,7 @@ class Documentos extends Model
         $usuarios = new Documentos();
 
         $usuarios->id_usuarios = $id_usuarios;
-        $usuarios->id_tipo_usuarios = $id_tipo_usuarios;
+        $usuarios->id_tipo_usuario = $id_tipo_usuarios;
         $usuarios->id_imagen = $id_imagen;
         $usuarios->img = $img;
         

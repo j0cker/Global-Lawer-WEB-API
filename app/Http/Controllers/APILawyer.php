@@ -338,11 +338,33 @@ class APILawyer extends Controller
 
         Log::info("[APILawyer][UploadDoc] Método Recibido: ". $request->getMethod());
 
-        if($request->isMethod('GET')) {
+        if($request->isMethod('POST')) {
 
             header('Access-Control-Allow-Origin: *');
             // header('Access-Control-Allow-Methods: *');
             // header('Access-Control-Allow-Headers: *');
+
+            //$request->merge(['token' => isset($_COOKIE["token"])? $_COOKIE["token"] : (empty($request->header('Authorization'))? '' : $request->header('Authorization'))]);
+
+                    
+            $validator = Validator::make($request->all(), [ 
+                //'token' => 'required',
+                'id_usuarios' => 'required',
+                'id_tipo_usuarios' => 'required',
+                'id_imagen' => 'required',
+                'img' => 'required'
+                
+            ]);
+
+            if($validator->fails()){
+
+                Log::info('[APILawyer][GetProfile] fails');
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'), 'Faltan campos', 0);
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+                
+            }
+
 
             $id_usuarios = $request->input('id_usuarios');
             $id_tipo_usuarios = $request->input('id_tipo_usuarios');
