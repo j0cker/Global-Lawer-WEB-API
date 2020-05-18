@@ -341,8 +341,8 @@ class APILawyer extends Controller
         if($request->isMethod('POST')) {
 
             header('Access-Control-Allow-Origin: *');
-            // header('Access-Control-Allow-Methods: *');
-            // header('Access-Control-Allow-Headers: *');
+            //header('Access-Control-Allow-Methods: *');
+            //header('Access-Control-Allow-Headers: *');
 
             //$request->merge(['token' => isset($_COOKIE["token"])? $_COOKIE["token"] : (empty($request->header('Authorization'))? '' : $request->header('Authorization'))]);
 
@@ -374,7 +374,7 @@ class APILawyer extends Controller
             Log::info("[APILawyer][UploadDoc] ID Usuarios: ". $id_usuarios);
             Log::info("[APILawyer][UploadDoc] ID Tipo Usuarios: ". $id_tipo_usuarios);
             Log::info("[APILawyer][UploadDoc] Id Imagen: ". $id_imagen);
-            Log::info("[APILawyer][UploadDoc] IMG: ". $img);
+            Log::info("[APILawyer][UploadDoc] IMG: ". strlen($img));
 
             $usuario = Documentos::uploadImg( $id_usuarios, $id_tipo_usuarios, $id_imagen, $img );
             Log::info($usuario);
