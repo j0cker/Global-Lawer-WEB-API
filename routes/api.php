@@ -26,6 +26,9 @@ Route::get('/verifyCode', 'API@VerificarSMS');
 Route::get('/sms', 'API@SMS2');
 Route::get('/smsConfirm', 'API@SMSConfirm');
 
+// Upload Docs
+Route::get('/uploadDoc', 'APILawyer@UploadDoc');
+
 /* 
 **** End Points Normal User ****
 */

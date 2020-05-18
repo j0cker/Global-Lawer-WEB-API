@@ -12,6 +12,7 @@ use JWTFactory;
 use Tymon\JWTAuth\PayloadFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Library\DAO\Abogado;
+use App\Library\DAO\Documentos;
 use App\Library\DAO\Permisos_inter;
 use App\Library\VO\ResponseJSON;
 use Session;
@@ -328,6 +329,70 @@ class APILawyer extends Controller
     
             }
 
+        }
+    }
+
+    public function UploadDoc(Request $request) {
+
+        Log::info('[APILawyer][UploadDoc]');
+
+        Log::info("[APILawyer][UploadDoc] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            $id_usuarios = $request->input('id_usuarios');
+            $id_tipo_usuarios = $request->input('id_tipo_usuarios');
+            $id_imagen = $request->input('id_imagen');
+            $img = $request->input('img');
+
+            Log::info("[APILawyer][UploadDoc] ID Usuarios: ". $id_usuarios);
+            Log::info("[APILawyer][UploadDoc] ID Tipo Usuarios: ". $id_tipo_usuarios);
+            Log::info("[APILawyer][UploadDoc] Id Imagen: ". $id_imagen);
+            Log::info("[APILawyer][UploadDoc] IMG: ". $img);
+
+            $usuario = Documentos::uploadImg( $id_usuarios, $id_tipo_usuarios, $id_imagen, $img );
+            Log::info($usuario);
+
+            if($usuario[0]->save == 1) {
+
+                Log::info('[APILawyer][UploadDoc] Se registro el documento en todas las tablas, creando permisos');
+
+                $permisos_inter_object = Permisos_inter::createPermisoInterAbogado($usuario[0]->id);
+
+                if ($permisos_inter_object[0]->save == 1) {
+
+                    $permisos_inter_object = Permisos_inter::lookForByIdAbogado($usuario[0]->id)->get();
+                    $permisos_inter = array();
+                    foreach($permisos_inter_object as $permiso){
+                        $permisos_inter[] = $permiso["id_permisos"];
+                    }
+            
+                    Log::info("[API][UploadDoc] Permisos: ");
+                    Log::info($permisos_inter);
+                    
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    return json_encode($responseJSON);
+
+                }
+
+            }
+
+            else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+
+        } else {
+            abort(404);
         }
     }
 
