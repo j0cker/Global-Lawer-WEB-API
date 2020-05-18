@@ -104,7 +104,7 @@ class Abogado extends Model
 
     }
 
-    public function scopeCreateUser($query, $correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $mesTermino, $anoTermino){
+    public function scopeCreateUser($query, $correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $anoTermino){
 
         Log::info("[Abogado][scopeCreateUser]");
 
@@ -126,7 +126,6 @@ class Abogado extends Model
         $usuarios->latitud = $lat;
         $usuarios->escuela = $escuela;
         $usuarios->carrera = $carrera;
-        $usuarios->mesTermino = $mesTermino;
         $usuarios->anoTermino = $anoTermino;
         
 

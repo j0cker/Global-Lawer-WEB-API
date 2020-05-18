@@ -257,8 +257,8 @@ class API extends Controller
         if($request->isMethod('GET')){
 
             header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
 
             $celular = $request->input('celular');
             Log::info('[APIUsuarios][SMSConfirm] Celular: ' . $celular);
@@ -304,8 +304,8 @@ class API extends Controller
         if($request->isMethod('GET')){
 
             header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
 
             $code = $request->input('code');
             $celular = $request->input('celular');

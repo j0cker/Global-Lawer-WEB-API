@@ -31,8 +31,8 @@ class APILawyer extends Controller
         if($request->isMethod('GET')) {
 
             header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
 
             $correo = $request->input('correo');
             $password = $request->input('password');
@@ -72,7 +72,7 @@ class APILawyer extends Controller
             Log::info("[APILawyer][registar] Mes de Termino: ". $mesTermino);
             Log::info("[APILawyer][registar] Año de Termino: ". $anoTermino);
 
-            $usuario = Abogado::createUser($correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $mesTermino, $anoTermino);
+            $usuario = Abogado::createUser($correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $anoTermino);
             Log::info($usuario);
 
             if($usuario[0]->save == 1) {
