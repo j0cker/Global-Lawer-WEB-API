@@ -100,8 +100,8 @@ class APIUserNormal extends Controller
         if($request->isMethod('GET')) {
 
             header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
             
             /*
             Validator::make($request->all(), [

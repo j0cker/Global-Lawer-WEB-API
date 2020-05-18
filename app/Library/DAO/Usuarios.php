@@ -72,7 +72,6 @@ class Usuarios extends Model
         $usuarios->nombre = $nombre;
         $usuarios->apellido = $apellido;
         $usuarios->correo = $correo;
-        $usuarios->cargo = '';
         $usuarios->telefono_fijo = $telefono;
         $usuarios->celular = $cel;
         $usuarios->pass = hash("sha256", $pass);
