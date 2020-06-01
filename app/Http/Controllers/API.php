@@ -12,6 +12,7 @@ use JWTFactory;
 use Tymon\JWTAuth\PayloadFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Library\DAO\Usuarios;
+use App\Library\DAO\Servicios;
 use App\Library\DAO\Abogado;
 use App\Library\DAO\Permisos_inter;
 use App\Library\VO\ResponseJSON;
@@ -261,10 +262,12 @@ class API extends Controller
             // header('Access-Control-Allow-Headers: *');
 
             $celular = $request->input('celular');
+            $celAbogado = $request->input('celAbogado');
             Log::info('[APIUsuarios][SMSConfirm] Celular: ' . $celular);
+            Log::info('[APIUsuarios][SMSConfirm] Celular Abogado: ' . $celAbogado);
 
             $sms = new SMS();
-            $status = $sms->enviarMensaje('El numero de contacto de tu abogado es: ','+52'. $celular);
+            $status = $sms->enviarMensaje('El número de contacto de tu abogado es: ' . $celAbogado,'+52'. $celular);
             Log::info('[APIUsuarios][SMSConfirm] Mensaje enviado');
 
             $obj = Array();
@@ -342,6 +345,54 @@ class API extends Controller
 
         } else {
             abort(404);
+        }
+    }
+
+    public function GetServices(Request $request) {
+     
+        Log::info('[API][GetLaGetServices]');
+
+        Log::info("[API][GetServices] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $token = $request->input('token');
+            $tUsuario = $request->input('tUsuario');
+            $id_user = $request->input('id_user');
+
+            Log::info("[API][GetServices] Token: ". $token);
+            Log::info("[API][GetServices] Tipo de Usuario: ". $tUsuario);
+            Log::info("[API][GetServices] ID User: ". $id_user);
+
+            // $id_usuarios = $token_decrypt["usr"]->id_usuarios;   
+            $usuario = Servicios::getServices($tUsuario, $id_user);
+        
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+            
+            $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+            $responseJSON->data = $usuario;
+            return json_encode($responseJSON);
+    
+            } else {
+    
+            $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($usuario));
+            $responseJSON->data = [];
+            return json_encode($responseJSON);
+    
+            }
+
         }
     }
 

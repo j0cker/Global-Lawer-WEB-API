@@ -13,6 +13,7 @@ use Tymon\JWTAuth\PayloadFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Library\DAO\Usuarios;
 use App\Library\DAO\Permisos_inter;
+use App\Library\DAO\Servicios;
 use App\Library\VO\ResponseJSON;
 use Session;
 use Validator;
@@ -188,6 +189,98 @@ class APIUserNormal extends Controller
         }
     }
 
+    public function ServicePost(Request $request){
+      
+        Log::info('[APIUserNormal][ServicePost]');
+
+        Log::info("[APIUserNormal][ServicePost] Método Recibido: ". $request->getMethod());
+
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+            /*
+            Validator::make($request->all(), [
+                'nombre' => 'required',
+                'apellido' => 'required',
+                'correo' => 'required',
+                'telefono' => 'required',
+                'cel' => 'required',
+              ])->validate();
+            */    
+              //Log::info('[APIUserNormal][registrar]2');
+            
+            $id_abogado = $request->input('id_abogado');
+            $id_usuario = $request->input('id_usuario');
+            $payment = $request->input('payment');
+        
+            Log::info("[APIUserNormal][registar] id_abogado: ". $id_abogado);
+            Log::info("[APIUserNormal][registar] id_usuario: ". $id_usuario);
+            Log::info("[APIUserNormal][registar] payment: ". $payment);
+        
+                
+            $usuario = Servicios::servicePost($id_abogado, $id_usuario, $payment);
+            Log::info($usuario);
+    
+            if($usuario[0]->save == 1){
+
+                Log::info('[APIUsuarios][registar] Se registro el usuario en todas las tablas, creando permisos');
+
+                $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
+
+                if ($permisos_inter_object[0]->save == 1) {
+
+                    $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario[0]->id)->get();
+                    $permisos_inter = array();
+                    foreach($permisos_inter_object as $permiso){
+                        $permisos_inter[] = $permiso["id_permisos"];
+                    }
+            
+                    $jwt_token = null;
+            
+                    $factory = JWTFactory::customClaims([
+                        'sub'   => $usuario[0]->id, //id a conciliar del usuario
+                        'iss'   => config('app.name'),
+                        'iat'   => Carbon::now()->timestamp,
+                        'exp'   => Carbon::tomorrow()->timestamp,
+                        'nbf'   => Carbon::now()->timestamp,
+                        'jti'   => uniqid(),
+                        'usr'   => $usuario[0],
+                        'permisos' => $permisos_inter,
+                    ]);
+                    
+                    $payload = $factory->make();
+                        
+                    $jwt_token = JWTAuth::encode($payload);
+                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
+                    Log::info("[API][ingresar] Permisos: ");
+                    Log::info($permisos_inter);
+                    
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    $responseJSON->token = $jwt_token->get();
+                    return json_encode($responseJSON);
+
+                }        
+            
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+            
+        } else {
+            abort(404);
+        }
+    }
+
     public function GetProfile(Request $request) {
      
         Log::info('[APIUserNormal][GetProfile]');
@@ -197,12 +290,13 @@ class APIUserNormal extends Controller
         if($request->isMethod('GET')) {
 
             header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
 
             Validator::make($request->all(), [
                 'token' => 'required'
             ])->validate();
+            
             
             $token = $request->input('token');
             $id_user = $request->input('id_user');

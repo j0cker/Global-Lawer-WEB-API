@@ -12,6 +12,7 @@ use JWTFactory;
 use Tymon\JWTAuth\PayloadFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Library\DAO\Abogado;
+use App\Library\DAO\Servicios;
 use App\Library\DAO\Documentos;
 use App\Library\DAO\Permisos_inter;
 use App\Library\VO\ResponseJSON;
@@ -312,6 +313,49 @@ class APILawyer extends Controller
 
             // $id_usuarios = $token_decrypt["usr"]->id_usuarios;   
             $usuario = Abogado::getProfile2($cedula);
+        
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+            
+            $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+            $responseJSON->data = $usuario;
+            return json_encode($responseJSON);
+    
+            } else {
+    
+            $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($usuario));
+            $responseJSON->data = [];
+            return json_encode($responseJSON);
+    
+            }
+
+        }
+    }
+
+    public function GetService(Request $request) {
+     
+        Log::info('[APILawyer][GetService]');
+
+        Log::info("[APILawyer][GetService] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $id_abogado = $request->input('id_abogado');
+
+            Log::info("[APILawyer][GetService] ID Abogado: ". $id_abogado);
+
+            $usuario = Servicios::getServicio($id_abogado);
         
             Log::info($usuario);
     

@@ -29,6 +29,8 @@ Route::get('/smsConfirm', 'API@SMSConfirm');
 // Upload Docs
 Route::post('/uploadDoc', 'APILawyer@UploadDoc');
 
+Route::get('/getServices', 'API@GetServices');
+
 /* 
 **** End Points Normal User ****
 */
@@ -39,6 +41,8 @@ Route::get('/normal_user/registrar', 'APIUserNormal@Registrar');
 Route::get('/normal_user/verifyCedula', 'APIUserNormal@VerifyCedula');
 // Get Perfil abogados
 Route::get('/normal_user/getProfile', 'APIUserNormal@GetProfile');
+// Registrar Servicio
+Route::get('/normal_user/servicePost', 'APIUserNormal@ServicePost');
 
 /* 
 **** End Points Abogados ****
@@ -52,5 +56,8 @@ Route::get('/lawyer/abogadosCards', 'APILawyer@AbogadosCards');
 // Get Perfil abogados
 Route::get('/lawyer/getProfile', 'APILawyer@GetProfile');
 Route::get('/lawyer/getLaw', 'APILawyer@GetLaw');
+
+// Get Servicio
+Route::get('/lawyer/getService', 'APILawyer@GetService');
 
 /* Texto de prueba */
