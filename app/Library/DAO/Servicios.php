@@ -86,23 +86,25 @@ class Servicios extends Model
       
     }
 
-    public function scopeServicePost($query, $id_abogado, $id_usuario, $payment, $tipo_servicio){
+    public function scopeServicePost($query,$id_servicios, $id_abogado, $payment, $tipo_servicio, $status){
 
-      Log::info("[Usuarios][scopeCreateUser]");
+      Log::info("[Servicios][scopeServicePost]");
+      DB::connection()->enableQueryLog();
 
-      $usuarios = new Servicios();
+      $sql = $query->where([
+        ['id_servicios', '=' , $id_servicios]
+        ])->update([
+          'precio' => $payment,
+          'tipo_servicio' => $tipo_servicio,
+          'status' => $status
+        ]);
 
-      $usuarios->id_abogado = $id_abogado;
-      $usuarios->id_usuarios = $id_usuario;
-      $usuarios->precio = $payment;
-      $usuarios->tipo_servicio = $tipo_servicio;
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
 
-      $obj = Array();
-      $obj[0] = new \stdClass();
-      $obj[0]->save = $usuarios->save(); //return true in the other one return 1
-      $obj[0]->id = $usuarios->id;
-
-      return $obj;
+        return $sql;
     }
 
     public function scopeChangeStatusServicio($query, $id_servicio, $status){

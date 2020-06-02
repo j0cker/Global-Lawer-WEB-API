@@ -212,65 +212,32 @@ class APIUserNormal extends Controller
               ])->validate();
             */    
               //Log::info('[APIUserNormal][registrar]2');
-            
+            $id_servicios = $request->input('id_servicios');            
             $id_abogado = $request->input('id_abogado');
-            $id_usuario = $request->input('id_usuario');
             $payment = $request->input('payment');
-            $tipo_servicio = $request->input('tipo_servicio');
-        
+            $tipo_servicio = $request->input('serviceLaw');
+            $status = $request->input('status');
+
+            Log::info("[APIUserNormal][registar] ID Servicios: ". $id_servicios);
             Log::info("[APIUserNormal][registar] ID Abogado: ". $id_abogado);
-            Log::info("[APIUserNormal][registar] ID Usuario: ". $id_usuario);
             Log::info("[APIUserNormal][registar] Payment: ". $payment);
             Log::info("[APIUserNormal][registar] Tipo Servicio: ". $tipo_servicio);
+            Log::info("[APIUserNormal][registar] Status: ". $status);
         
                 
-            $usuario = Servicios::servicePost($id_abogado, $id_usuario, $payment, $tipo_servicio);
+            $usuario = Servicios::servicePost($id_servicios, $id_abogado, $payment, $tipo_servicio, $status);
+            
             Log::info($usuario);
-    
-            if($usuario[0]->save == 1){
+            if($usuario == 1){
 
-                Log::info('[APIUsuarios][registar] Se registro el usuario en todas las tablas, creando permisos');
-
-                $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
-
-                if ($permisos_inter_object[0]->save == 1) {
-
-                    $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario[0]->id)->get();
-                    $permisos_inter = array();
-                    foreach($permisos_inter_object as $permiso){
-                        $permisos_inter[] = $permiso["id_permisos"];
-                    }
-            
-                    $jwt_token = null;
-            
-                    $factory = JWTFactory::customClaims([
-                        'sub'   => $usuario[0]->id, //id a conciliar del usuario
-                        'iss'   => config('app.name'),
-                        'iat'   => Carbon::now()->timestamp,
-                        'exp'   => Carbon::tomorrow()->timestamp,
-                        'nbf'   => Carbon::now()->timestamp,
-                        'jti'   => uniqid(),
-                        'usr'   => $usuario[0],
-                        'permisos' => $permisos_inter,
-                    ]);
+                Log::info('[APIUsuarios][ChangePassword] Se actualizo los datos de la moto en la tabla Motos');
                     
-                    $payload = $factory->make();
-                        
-                    $jwt_token = JWTAuth::encode($payload);
-                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
-                    Log::info("[API][ingresar] Permisos: ");
-                    Log::info($permisos_inter);
-                    
-                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
-                    $responseJSON->data = $usuario;
-                    $responseJSON->token = $jwt_token->get();
-                    return json_encode($responseJSON);
-
-                }        
-            
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
     
             } else {
-                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsChangePass'), 0);
                 $responseJSON->data = $usuario;
                 return json_encode($responseJSON);
         
