@@ -369,13 +369,15 @@ class API extends Controller
             $token = $request->input('token');
             $tUsuario = $request->input('tUsuario');
             $id_user = $request->input('id_user');
+            $status = $request->input('status');
 
             Log::info("[API][GetServices] Token: ". $token);
             Log::info("[API][GetServices] Tipo de Usuario: ". $tUsuario);
             Log::info("[API][GetServices] ID User: ". $id_user);
+            Log::info("[API][GetServices] Status: ". $status);
 
             // $id_usuarios = $token_decrypt["usr"]->id_usuarios;   
-            $usuario = Servicios::getServices($tUsuario, $id_user);
+            $usuario = Servicios::getServices($tUsuario, $id_user, $status);
         
             Log::info($usuario);
     
@@ -393,6 +395,54 @@ class API extends Controller
     
             }
 
+        }
+    }
+
+    public function ChangeStatusServicio(Request $request){
+  
+        Log::info('[APIUsuarios][ChangeStatusServicio]');
+
+        Log::info("[APIUsuarios][ChangeStatusServicio] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+
+            $this->validate($request, [
+                'token' => 'required',
+              ]);
+
+            $token = $request->input('token');
+            $id_servicio = $request->input('id_servicio');
+            $status = $request->input('status');
+
+            Log::info('[APIUsuarios][ChangeStatusServicio] Token: ' . $token);
+            Log::info('[APIUsuarios][ChangeStatusServicio] ID Servicio: ' . $id_servicio);
+            Log::info('[APIUsuarios][ChangeStatusServicio] Status: ' . $status);
+
+            $usuario = Servicios::changeStatusServicio($id_servicio, $status);
+ 
+            Log::info($usuario);
+            if($usuario == 1){
+
+                Log::info('[APIUsuarios][ChangePassword] Se actualizo los datos de la moto en la tabla Motos');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsChangePass'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
         }
     }
 

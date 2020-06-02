@@ -60,4 +60,7 @@ Route::get('/lawyer/getLaw', 'APILawyer@GetLaw');
 // Get Servicio
 Route::get('/lawyer/getService', 'APILawyer@GetService');
 
+// Cambiar Status Pedidos
+Route::get('/lawyer/changeStatusServicio', 'API@ChangeStatusServicio');
+
 /* Texto de prueba */

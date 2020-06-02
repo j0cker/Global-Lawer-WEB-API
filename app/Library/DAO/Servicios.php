@@ -43,7 +43,7 @@ class Servicios extends Model
 
     }
 
-    public function scopeGetServices($query, $tUsuario, $id_user){
+    public function scopeGetServices($query, $tUsuario, $id_user, $status){
 
       Log::info("[Abogado][scopeGetServices]");
 
@@ -55,6 +55,7 @@ class Servicios extends Model
           
         $sql = $query->where([
           ['id_usuarios', '=', $id_user],
+          ['status', '=', $status],
         ])->get();
 
         //log query
@@ -70,6 +71,7 @@ class Servicios extends Model
   
         $sql = $query->where([
           ['id_abogado', '=', $id_user],
+          ['status', '=', $status],
         ])->get();
   
         //log query
@@ -82,9 +84,9 @@ class Servicios extends Model
 
 
       
-  }
+    }
 
-    public function scopeServicePost($query, $id_abogado, $id_usuario, $payment){
+    public function scopeServicePost($query, $id_abogado, $id_usuario, $payment, $tipo_servicio){
 
       Log::info("[Usuarios][scopeCreateUser]");
 
@@ -93,6 +95,7 @@ class Servicios extends Model
       $usuarios->id_abogado = $id_abogado;
       $usuarios->id_usuarios = $id_usuario;
       $usuarios->precio = $payment;
+      $usuarios->tipo_servicio = $tipo_servicio;
 
       $obj = Array();
       $obj[0] = new \stdClass();
@@ -100,8 +103,27 @@ class Servicios extends Model
       $obj[0]->id = $usuarios->id;
 
       return $obj;
-  }
+    }
 
+    public function scopeChangeStatusServicio($query, $id_servicio, $status){
+      
+      Log::info("[Servicios][scopeChangeStatusServicio]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_servicios', '=' , $id_servicio]
+        ])->update([
+          'status' => $status
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+
+    }
 
 }
 ?>
