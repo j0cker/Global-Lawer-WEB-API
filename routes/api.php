@@ -43,6 +43,7 @@ Route::get('/normal_user/verifyCedula', 'APIUserNormal@VerifyCedula');
 Route::get('/normal_user/getProfile', 'APIUserNormal@GetProfile');
 // Registrar Servicio
 Route::get('/normal_user/servicePost', 'APIUserNormal@ServicePost');
+Route::get('/normal_user/servicePost2', 'APIUserNormal@ServicePost2');
 
 /* 
 **** End Points Abogados ****

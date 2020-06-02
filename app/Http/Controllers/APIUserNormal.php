@@ -190,6 +190,98 @@ class APIUserNormal extends Controller
     }
 
     public function ServicePost(Request $request){
+
+        Log::info('[APIUserNormal][ServicePost]');
+
+        Log::info("[APIUserNormal][ServicePost] Método Recibido: ". $request->getMethod());
+
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'nombre' => 'required',
+                'apellido' => 'required',
+                'correo' => 'required',
+                'telefono' => 'required',
+                'cel' => 'required',
+              ])->validate();
+            */    
+              //Log::info('[APIUserNormal][registrar]2');
+
+            $id_abogado = $request->input('id_abogado');
+            $id_usuario = $request->input('id_usuario');
+            $payment = $request->input('payment');
+
+            Log::info("[APIUserNormal][registar] id_abogado: ". $id_abogado);
+            Log::info("[APIUserNormal][registar] id_usuario: ". $id_usuario);
+            Log::info("[APIUserNormal][registar] payment: ". $payment);
+
+
+            $usuario = Servicios::servicePost($id_abogado, $id_usuario, $payment);
+            Log::info($usuario);
+
+            if($usuario[0]->save == 1){
+
+                Log::info('[APIUsuarios][registar] Se registro el usuario en todas las tablas, creando permisos');
+
+                $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
+
+                if ($permisos_inter_object[0]->save == 1) {
+
+                    $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario[0]->id)->get();
+                    $permisos_inter = array();
+                    foreach($permisos_inter_object as $permiso){
+                        $permisos_inter[] = $permiso["id_permisos"];
+                    }
+
+                    $jwt_token = null;
+
+                    $factory = JWTFactory::customClaims([
+                        'sub'   => $usuario[0]->id, //id a conciliar del usuario
+                        'iss'   => config('app.name'),
+                        'iat'   => Carbon::now()->timestamp,
+                        'exp'   => Carbon::tomorrow()->timestamp,
+                        'nbf'   => Carbon::now()->timestamp,
+                        'jti'   => uniqid(),
+                        'usr'   => $usuario[0],
+                        'permisos' => $permisos_inter,
+                    ]);
+
+                    $payload = $factory->make();
+
+                    $jwt_token = JWTAuth::encode($payload);
+                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
+                    Log::info("[API][ingresar] Permisos: ");
+                    Log::info($permisos_inter);
+
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    $responseJSON->token = $jwt_token->get();
+                    return json_encode($responseJSON);
+
+                }        
+
+
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+
+            }
+
+            return "";
+
+        } else {
+            abort(404);
+        }
+    }
+
+    public function ServicePost2(Request $request){
       
         Log::info('[APIUserNormal][ServicePost]');
 
@@ -225,7 +317,7 @@ class APIUserNormal extends Controller
             Log::info("[APIUserNormal][registar] Status: ". $status);
         
                 
-            $usuario = Servicios::servicePost($id_servicios, $id_abogado, $payment, $tipo_servicio, $status);
+            $usuario = Servicios::servicePost2($id_servicios, $id_abogado, $payment, $tipo_servicio, $status);
             
             Log::info($usuario);
             if($usuario == 1){
