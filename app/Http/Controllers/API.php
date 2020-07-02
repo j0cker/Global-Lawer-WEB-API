@@ -14,6 +14,8 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Library\DAO\Usuarios;
 use App\Library\DAO\Servicios;
 use App\Library\DAO\Abogado;
+use App\Library\DAO\Empresa;
+use App\Library\DAO\ValoracionUsuario;
 use App\Library\DAO\Permisos_inter;
 use App\Library\VO\ResponseJSON;
 use Session;
@@ -147,6 +149,192 @@ class API extends Controller
 
             }
 
+    
+            return "";
+            
+        } else {
+            abort(404);
+        }
+    }
+
+    public function EmpresaPost(Request $request){
+      
+        Log::info('[API][EmpresaPost]');
+
+        Log::info("[API][EmpresaPost] Método Recibido: ". $request->getMethod());
+
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+            /*
+            Validator::make($request->all(), [
+                'nombre' => 'required',
+                'apellido' => 'required',
+                'correo' => 'required',
+                'telefono' => 'required',
+                'cel' => 'required',
+              ])->validate();
+            */    
+              //Log::info('[APIUserNormal][registrar]2');
+            
+            $tipo_usuario = $request->input('tipo_usuario');
+            $id_responsable = $request->input('id_responsable');
+            $nombre = $request->input('nombre');
+            $giro = $request->input('giro');
+
+            Log::info("[API][EmpresaPost] Tipo de Usuario: ". $tipo_usuario);
+            Log::info("[API][EmpresaPost] ID Responsable: ". $id_responsable);
+            Log::info("[API][EmpresaPost] Nombre: ". $nombre);
+            Log::info("[API][EmpresaPost] Giro: ". $giro);
+        
+                
+            $usuario = Empresa::createEmpresa($tipo_usuario, $id_responsable, $nombre, $giro);
+            Log::info($usuario);
+    
+            if($usuario[0]->save == 1){
+
+                Log::info('[APIUsuarios][registar] Se registro el usuario en todas las tablas, creando permisos');
+
+                $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
+
+                if ($permisos_inter_object[0]->save == 1) {
+
+                    $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario[0]->id)->get();
+                    $permisos_inter = array();
+                    foreach($permisos_inter_object as $permiso){
+                        $permisos_inter[] = $permiso["id_permisos"];
+                    }
+            
+                    $jwt_token = null;
+            
+                    $factory = JWTFactory::customClaims([
+                        'sub'   => $usuario[0]->id, //id a conciliar del usuario
+                        'iss'   => config('app.name'),
+                        'iat'   => Carbon::now()->timestamp,
+                        'exp'   => Carbon::tomorrow()->timestamp,
+                        'nbf'   => Carbon::now()->timestamp,
+                        'jti'   => uniqid(),
+                        'usr'   => $usuario[0],
+                        'permisos' => $permisos_inter,
+                    ]);
+                    
+                    $payload = $factory->make();
+                        
+                    $jwt_token = JWTAuth::encode($payload);
+                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
+                    Log::info("[API][ingresar] Permisos: ");
+                    Log::info($permisos_inter);
+                    
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    $responseJSON->token = $jwt_token->get();
+                    return json_encode($responseJSON);
+
+                }        
+            
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+            
+        } else {
+            abort(404);
+        }
+    }
+
+    public function Valoracion(Request $request){
+      
+        Log::info('[API][Valoracion]');
+
+        Log::info("[API][Valoracion] Método Recibido: ". $request->getMethod());
+
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+            /*
+            Validator::make($request->all(), [
+                'nombre' => 'required',
+                'apellido' => 'required',
+                'correo' => 'required',
+                'telefono' => 'required',
+                'cel' => 'required',
+              ])->validate();
+            */    
+              //Log::info('[APIUserNormal][registrar]2');
+            
+            $id_servicios = $request->input('id_servicios');
+            $id_usuario = $request->input('id_usuario');
+            $rating = $request->input('rating');
+
+            Log::info("[API][Valoracion] ID Servicios: ". $id_servicios);
+            Log::info("[API][Valoracion] ID Usuario: ". $id_usuario);
+            Log::info("[API][Valoracion] Rating: ". $rating);
+        
+                
+            $usuario = ValoracionUsuario::valoracionPost($id_servicios, $id_usuario, $rating);
+            Log::info($usuario);
+    
+            if($usuario[0]->save == 1){
+
+                Log::info('[APIUsuarios][Valoracion] Se registro el usuario en todas las tablas, creando permisos');
+
+                $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
+
+                if ($permisos_inter_object[0]->save == 1) {
+
+                    $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario[0]->id)->get();
+                    $permisos_inter = array();
+                    foreach($permisos_inter_object as $permiso){
+                        $permisos_inter[] = $permiso["id_permisos"];
+                    }
+            
+                    $jwt_token = null;
+            
+                    $factory = JWTFactory::customClaims([
+                        'sub'   => $usuario[0]->id, //id a conciliar del usuario
+                        'iss'   => config('app.name'),
+                        'iat'   => Carbon::now()->timestamp,
+                        'exp'   => Carbon::tomorrow()->timestamp,
+                        'nbf'   => Carbon::now()->timestamp,
+                        'jti'   => uniqid(),
+                        'usr'   => $usuario[0],
+                        'permisos' => $permisos_inter,
+                    ]);
+                    
+                    $payload = $factory->make();
+                        
+                    $jwt_token = JWTAuth::encode($payload);
+                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
+                    Log::info("[API][ingresar] Permisos: ");
+                    Log::info($permisos_inter);
+                    
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    $responseJSON->token = $jwt_token->get();
+                    return json_encode($responseJSON);
+
+                }        
+            
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
     
             return "";
             

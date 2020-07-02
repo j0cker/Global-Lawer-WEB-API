@@ -376,6 +376,58 @@ class APILawyer extends Controller
         }
     }
 
+    public function UpdateLaw(Request $request) {
+     
+        Log::info('[APILawyer][UpdateLaw]');
+
+        Log::info("[APILawyer][UpdateLaw] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $id_abogado = $request->input('id_abogado');
+            $acercaDe = $request->input('acercaDe');
+            $nombre = $request->input('nombre');
+            $apellido = $request->input('apellido');
+
+            Log::info("[APILawyer][UpdateLaw] ID Abogado: ". $id_abogado);
+            Log::info("[APILawyer][UpdateLaw] Acerca de: ". $acercaDe);
+            Log::info("[APILawyer][UpdateLaw] Nombre: ". $nombre);
+            Log::info("[APILawyer][UpdateLaw] Apellido: ". $apellido);
+
+            $usuario = Abogado::updateLaw($id_abogado, $acercaDe, $nombre, $apellido);
+        
+            Log::info($usuario);
+    
+            if($usuario == 1){
+            
+                Log::info('[APIUsuarios][UpdateLaw] Se actualizo los datos de usuario en la tabla Usuarios');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+
+        }
+    }
+
     public function UploadDoc(Request $request) {
 
         Log::info('[APILawyer][UploadDoc]');

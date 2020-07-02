@@ -216,13 +216,14 @@ class APIUserNormal extends Controller
             $id_abogado = $request->input('id_abogado');
             $id_usuario = $request->input('id_usuario');
             $payment = $request->input('payment');
+            $descripcion = $request->input('descripcion');
 
-            Log::info("[APIUserNormal][registar] id_abogado: ". $id_abogado);
-            Log::info("[APIUserNormal][registar] id_usuario: ". $id_usuario);
-            Log::info("[APIUserNormal][registar] payment: ". $payment);
+            Log::info("[APIUserNormal][registar] ID Abogado: ". $id_abogado);
+            Log::info("[APIUserNormal][registar] ID Usuario: ". $id_usuario);
+            Log::info("[APIUserNormal][registar] Payment: ". $payment);
+            Log::info("[APIUserNormal][registar] Descripcion: ". $descripcion);
 
-
-            $usuario = Servicios::servicePost($id_abogado, $id_usuario, $payment);
+            $usuario = Servicios::servicePost($id_abogado, $id_usuario, $payment, $descripcion);
             Log::info($usuario);
 
             if($usuario[0]->save == 1){
@@ -422,6 +423,58 @@ class APIUserNormal extends Controller
                 return redirect('/');
           
               }
+
+        }
+    }
+
+    public function UpdateUser(Request $request) {
+     
+        Log::info('[APILawyer][UpdateUser]');
+
+        Log::info("[APILawyer][UpdateUser] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $id_usuarios = $request->input('id_usuarios');
+            $acercaDe = $request->input('acercaDe');
+            $nombre = $request->input('nombre');
+            $apellido = $request->input('apellido');
+
+            Log::info("[APILawyer][UpdateUser] ID Usuario: ". $id_usuarios);
+            Log::info("[APILawyer][UpdateUser] Acerca de: ". $acercaDe);
+            Log::info("[APILawyer][UpdateUser] Nombre: ". $nombre);
+            Log::info("[APILawyer][UpdateUser] Apellido: ". $apellido);
+
+            $usuario = Usuarios::updateUser($id_usuarios, $acercaDe, $nombre, $apellido);
+        
+            Log::info($usuario);
+    
+            if($usuario == 1){
+            
+                Log::info('[APIUsuarios][UpdateUser] Se actualizo los datos de usuario en la tabla Usuarios');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
 
         }
     }
