@@ -34,6 +34,7 @@ Route::get('/regEmpresa', 'API@EmpresaPost');
 // Valoracion
 Route::get('/valoracion', 'API@Valoracion');
 
+
 /* 
 ******************** End Points Normal User ********************
 */
