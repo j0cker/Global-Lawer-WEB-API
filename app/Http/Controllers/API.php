@@ -12,7 +12,10 @@ use JWTFactory;
 use Tymon\JWTAuth\PayloadFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Library\DAO\Usuarios;
+use App\Library\DAO\Servicios;
 use App\Library\DAO\Abogado;
+use App\Library\DAO\Empresa;
+use App\Library\DAO\ValoracionUsuario;
 use App\Library\DAO\Permisos_inter;
 use App\Library\VO\ResponseJSON;
 use Session;
@@ -154,6 +157,192 @@ class API extends Controller
         }
     }
 
+    public function EmpresaPost(Request $request){
+      
+        Log::info('[API][EmpresaPost]');
+
+        Log::info("[API][EmpresaPost] Método Recibido: ". $request->getMethod());
+
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+            /*
+            Validator::make($request->all(), [
+                'nombre' => 'required',
+                'apellido' => 'required',
+                'correo' => 'required',
+                'telefono' => 'required',
+                'cel' => 'required',
+              ])->validate();
+            */    
+              //Log::info('[APIUserNormal][registrar]2');
+            
+            $tipo_usuario = $request->input('tipo_usuario');
+            $id_responsable = $request->input('id_responsable');
+            $nombre = $request->input('nombre');
+            $giro = $request->input('giro');
+
+            Log::info("[API][EmpresaPost] Tipo de Usuario: ". $tipo_usuario);
+            Log::info("[API][EmpresaPost] ID Responsable: ". $id_responsable);
+            Log::info("[API][EmpresaPost] Nombre: ". $nombre);
+            Log::info("[API][EmpresaPost] Giro: ". $giro);
+        
+                
+            $usuario = Empresa::createEmpresa($tipo_usuario, $id_responsable, $nombre, $giro);
+            Log::info($usuario);
+    
+            if($usuario[0]->save == 1){
+
+                Log::info('[APIUsuarios][registar] Se registro el usuario en todas las tablas, creando permisos');
+
+                $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
+
+                if ($permisos_inter_object[0]->save == 1) {
+
+                    $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario[0]->id)->get();
+                    $permisos_inter = array();
+                    foreach($permisos_inter_object as $permiso){
+                        $permisos_inter[] = $permiso["id_permisos"];
+                    }
+            
+                    $jwt_token = null;
+            
+                    $factory = JWTFactory::customClaims([
+                        'sub'   => $usuario[0]->id, //id a conciliar del usuario
+                        'iss'   => config('app.name'),
+                        'iat'   => Carbon::now()->timestamp,
+                        'exp'   => Carbon::tomorrow()->timestamp,
+                        'nbf'   => Carbon::now()->timestamp,
+                        'jti'   => uniqid(),
+                        'usr'   => $usuario[0],
+                        'permisos' => $permisos_inter,
+                    ]);
+                    
+                    $payload = $factory->make();
+                        
+                    $jwt_token = JWTAuth::encode($payload);
+                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
+                    Log::info("[API][ingresar] Permisos: ");
+                    Log::info($permisos_inter);
+                    
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    $responseJSON->token = $jwt_token->get();
+                    return json_encode($responseJSON);
+
+                }        
+            
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+            
+        } else {
+            abort(404);
+        }
+    }
+
+    public function Valoracion(Request $request){
+      
+        Log::info('[API][Valoracion]');
+
+        Log::info("[API][Valoracion] Método Recibido: ". $request->getMethod());
+
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+            /*
+            Validator::make($request->all(), [
+                'nombre' => 'required',
+                'apellido' => 'required',
+                'correo' => 'required',
+                'telefono' => 'required',
+                'cel' => 'required',
+              ])->validate();
+            */    
+              //Log::info('[APIUserNormal][registrar]2');
+            
+            $id_servicios = $request->input('id_servicios');
+            $id_usuario = $request->input('id_usuario');
+            $rating = $request->input('rating');
+
+            Log::info("[API][Valoracion] ID Servicios: ". $id_servicios);
+            Log::info("[API][Valoracion] ID Usuario: ". $id_usuario);
+            Log::info("[API][Valoracion] Rating: ". $rating);
+        
+                
+            $usuario = ValoracionUsuario::valoracionPost($id_servicios, $id_usuario, $rating);
+            Log::info($usuario);
+    
+            if($usuario[0]->save == 1){
+
+                Log::info('[APIUsuarios][Valoracion] Se registro el usuario en todas las tablas, creando permisos');
+
+                $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
+
+                if ($permisos_inter_object[0]->save == 1) {
+
+                    $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario[0]->id)->get();
+                    $permisos_inter = array();
+                    foreach($permisos_inter_object as $permiso){
+                        $permisos_inter[] = $permiso["id_permisos"];
+                    }
+            
+                    $jwt_token = null;
+            
+                    $factory = JWTFactory::customClaims([
+                        'sub'   => $usuario[0]->id, //id a conciliar del usuario
+                        'iss'   => config('app.name'),
+                        'iat'   => Carbon::now()->timestamp,
+                        'exp'   => Carbon::tomorrow()->timestamp,
+                        'nbf'   => Carbon::now()->timestamp,
+                        'jti'   => uniqid(),
+                        'usr'   => $usuario[0],
+                        'permisos' => $permisos_inter,
+                    ]);
+                    
+                    $payload = $factory->make();
+                        
+                    $jwt_token = JWTAuth::encode($payload);
+                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
+                    Log::info("[API][ingresar] Permisos: ");
+                    Log::info($permisos_inter);
+                    
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    $responseJSON->token = $jwt_token->get();
+                    return json_encode($responseJSON);
+
+                }        
+            
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+            
+        } else {
+            abort(404);
+        }
+    }
+
     public function SMS(Request $request){
 
         Log::info('[APIUsuarios][SMS]');
@@ -257,14 +446,16 @@ class API extends Controller
         if($request->isMethod('GET')){
 
             header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
 
             $celular = $request->input('celular');
+            $celAbogado = $request->input('celAbogado');
             Log::info('[APIUsuarios][SMSConfirm] Celular: ' . $celular);
+            Log::info('[APIUsuarios][SMSConfirm] Celular Abogado: ' . $celAbogado);
 
             $sms = new SMS();
-            $status = $sms->enviarMensaje('El numero de contacto de tu abogado es: ','+52'. $celular);
+            $status = $sms->enviarMensaje('El número de contacto de tu abogado es: ' . $celAbogado,'+52'. $celular);
             Log::info('[APIUsuarios][SMSConfirm] Mensaje enviado');
 
             $obj = Array();
@@ -304,8 +495,8 @@ class API extends Controller
         if($request->isMethod('GET')){
 
             header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
 
             $code = $request->input('code');
             $celular = $request->input('celular');
@@ -342,6 +533,104 @@ class API extends Controller
 
         } else {
             abort(404);
+        }
+    }
+
+    public function GetServices(Request $request) {
+     
+        Log::info('[API][GetLaGetServices]');
+
+        Log::info("[API][GetServices] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $token = $request->input('token');
+            $tUsuario = $request->input('tUsuario');
+            $id_user = $request->input('id_user');
+            $status = $request->input('status');
+
+            Log::info("[API][GetServices] Token: ". $token);
+            Log::info("[API][GetServices] Tipo de Usuario: ". $tUsuario);
+            Log::info("[API][GetServices] ID User: ". $id_user);
+            Log::info("[API][GetServices] Status: ". $status);
+
+            // $id_usuarios = $token_decrypt["usr"]->id_usuarios;   
+            $usuario = Servicios::getServices($tUsuario, $id_user, $status);
+        
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+            
+            $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+            $responseJSON->data = $usuario;
+            return json_encode($responseJSON);
+    
+            } else {
+    
+            $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($usuario));
+            $responseJSON->data = [];
+            return json_encode($responseJSON);
+    
+            }
+
+        }
+    }
+
+    public function ChangeStatusServicio(Request $request){
+  
+        Log::info('[APIUsuarios][ChangeStatusServicio]');
+
+        Log::info("[APIUsuarios][ChangeStatusServicio] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+
+            $this->validate($request, [
+                'token' => 'required',
+              ]);
+
+            $token = $request->input('token');
+            $id_servicio = $request->input('id_servicio');
+            $status = $request->input('status');
+
+            Log::info('[APIUsuarios][ChangeStatusServicio] Token: ' . $token);
+            Log::info('[APIUsuarios][ChangeStatusServicio] ID Servicio: ' . $id_servicio);
+            Log::info('[APIUsuarios][ChangeStatusServicio] Status: ' . $status);
+
+            $usuario = Servicios::changeStatusServicio($id_servicio, $status);
+ 
+            Log::info($usuario);
+            if($usuario == 1){
+
+                Log::info('[APIUsuarios][ChangePassword] Se actualizo los datos de la moto en la tabla Motos');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsChangePass'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
         }
     }
 

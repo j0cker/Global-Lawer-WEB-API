@@ -72,7 +72,6 @@ class Usuarios extends Model
         $usuarios->nombre = $nombre;
         $usuarios->apellido = $apellido;
         $usuarios->correo = $correo;
-        $usuarios->cargo = '';
         $usuarios->telefono_fijo = $telefono;
         $usuarios->celular = $cel;
         $usuarios->pass = hash("sha256", $pass);
@@ -84,6 +83,27 @@ class Usuarios extends Model
 
         return $obj;
     }
+
+    public function scopeUpdateUser( $query, $id_usuarios, $acercaDe, $nombre, $apellido ){
+
+      Log::info("[Usuarios][scopeUpdateUser]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_usuarios', '=' , $id_usuarios]
+        ])->update([
+          'acerca_de' => $acercaDe,
+          'nombre' => $nombre,
+          'apellido' => $apellido
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+  }
 
 }
 ?>

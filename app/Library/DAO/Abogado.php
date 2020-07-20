@@ -104,7 +104,7 @@ class Abogado extends Model
 
     }
 
-    public function scopeCreateUser($query, $correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $mesTermino, $anoTermino){
+    public function scopeCreateUser($query, $correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $anoTermino){
 
         Log::info("[Abogado][scopeCreateUser]");
 
@@ -126,7 +126,6 @@ class Abogado extends Model
         $usuarios->latitud = $lat;
         $usuarios->escuela = $escuela;
         $usuarios->carrera = $carrera;
-        $usuarios->mesTermino = $mesTermino;
         $usuarios->anoTermino = $anoTermino;
         
 
@@ -137,6 +136,27 @@ class Abogado extends Model
 
         return $obj;
     }
+
+    public function scopeUpdateLaw( $query, $id_abogado, $acercaDe, $nombre, $apellido ){
+
+      Log::info("[Usuarios][scopeUpdateLaw]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_abogado', '=' , $id_abogado]
+        ])->update([
+          'acerca_de' => $acercaDe,
+          'nombre' => $nombre,
+          'apellido' => $apellido
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+  }
 
 }
 ?>

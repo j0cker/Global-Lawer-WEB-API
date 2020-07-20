@@ -12,6 +12,8 @@ use JWTFactory;
 use Tymon\JWTAuth\PayloadFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Library\DAO\Abogado;
+use App\Library\DAO\Servicios;
+use App\Library\DAO\Documentos;
 use App\Library\DAO\Permisos_inter;
 use App\Library\VO\ResponseJSON;
 use Session;
@@ -30,8 +32,8 @@ class APILawyer extends Controller
         if($request->isMethod('GET')) {
 
             header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
 
             $correo = $request->input('correo');
             $password = $request->input('password');
@@ -71,7 +73,7 @@ class APILawyer extends Controller
             Log::info("[APILawyer][registar] Mes de Termino: ". $mesTermino);
             Log::info("[APILawyer][registar] Año de Termino: ". $anoTermino);
 
-            $usuario = Abogado::createUser($correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $mesTermino, $anoTermino);
+            $usuario = Abogado::createUser($correo, $password, $cedula, $nombre, $apellido, $disponibilidad, $celular, $idiomas, $diasLaborales, $hEntrada, $hSalida, $address, $long, $lat, $escuela, $carrera, $anoTermino);
             Log::info($usuario);
 
             if($usuario[0]->save == 1) {
@@ -186,13 +188,35 @@ class APILawyer extends Controller
 
         if($request->isMethod('GET')) {
 
-            header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
 
-            Validator::make($request->all(), [
-                'token' => 'required'
-            ])->validate();
+
+            header('Access-Control-Allow-Origin: *');
+            //header('Access-Control-Allow-Methods: *');
+            //header('Access-Control-Allow-Headers: *');
+
+            $token = $request->header('Authorization');
+
+            Log::info('[APILawyer][GetProfile] XSRF: ' . print_r($token, true));
+            
+            
+
+            $request->merge(['token' => isset($token)? $token : '']);
+
+                    
+            $validator = Validator::make($request->all(), [ 
+                'token' => 'required',
+                'id_user' => 'required'
+                
+            ]);
+
+            if($validator->fails()){
+
+                Log::info('[APILawyer][GetProfile] fails');
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'), 'Faltan campos', 0);
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+                
+            }
             
             $token = $request->input('token');
             $id_user = $request->input('id_user');
@@ -306,6 +330,187 @@ class APILawyer extends Controller
     
             }
 
+        }
+    }
+
+    public function GetService(Request $request) {
+     
+        Log::info('[APILawyer][GetService]');
+
+        Log::info("[APILawyer][GetService] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $id_abogado = $request->input('id_abogado');
+
+            Log::info("[APILawyer][GetService] ID Abogado: ". $id_abogado);
+
+            $usuario = Servicios::getServicio($id_abogado);
+        
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+            
+            $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+            $responseJSON->data = $usuario;
+            return json_encode($responseJSON);
+    
+            } else {
+    
+            $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($usuario));
+            $responseJSON->data = [];
+            return json_encode($responseJSON);
+    
+            }
+
+        }
+    }
+
+    public function UpdateLaw(Request $request) {
+     
+        Log::info('[APILawyer][UpdateLaw]');
+
+        Log::info("[APILawyer][UpdateLaw] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $id_abogado = $request->input('id_abogado');
+            $acercaDe = $request->input('acercaDe');
+            $nombre = $request->input('nombre');
+            $apellido = $request->input('apellido');
+
+            Log::info("[APILawyer][UpdateLaw] ID Abogado: ". $id_abogado);
+            Log::info("[APILawyer][UpdateLaw] Acerca de: ". $acercaDe);
+            Log::info("[APILawyer][UpdateLaw] Nombre: ". $nombre);
+            Log::info("[APILawyer][UpdateLaw] Apellido: ". $apellido);
+
+            $usuario = Abogado::updateLaw($id_abogado, $acercaDe, $nombre, $apellido);
+        
+            Log::info($usuario);
+    
+            if($usuario == 1){
+            
+                Log::info('[APIUsuarios][UpdateLaw] Se actualizo los datos de usuario en la tabla Usuarios');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+
+        }
+    }
+
+    public function UploadDoc(Request $request) {
+
+        Log::info('[APILawyer][UploadDoc]');
+
+        Log::info("[APILawyer][UploadDoc] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('POST')) {
+
+            header('Access-Control-Allow-Origin: *');
+            //header('Access-Control-Allow-Methods: *');
+            //header('Access-Control-Allow-Headers: *');
+
+            //$request->merge(['token' => isset($_COOKIE["token"])? $_COOKIE["token"] : (empty($request->header('Authorization'))? '' : $request->header('Authorization'))]);
+
+                    
+            $validator = Validator::make($request->all(), [ 
+                //'token' => 'required',
+                'id_usuarios' => 'required',
+                'id_tipo_usuarios' => 'required',
+                'id_imagen' => 'required',
+                'img' => 'required'
+                
+            ]);
+
+            if($validator->fails()){
+
+                Log::info('[APILawyer][GetProfile] fails');
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'), 'Faltan campos', 0);
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+                
+            }
+
+
+            $id_usuarios = $request->input('id_usuarios');
+            $id_tipo_usuarios = $request->input('id_tipo_usuarios');
+            $id_imagen = $request->input('id_imagen');
+            $img = $request->input('img');
+
+            Log::info("[APILawyer][UploadDoc] ID Usuarios: ". $id_usuarios);
+            Log::info("[APILawyer][UploadDoc] ID Tipo Usuarios: ". $id_tipo_usuarios);
+            Log::info("[APILawyer][UploadDoc] Id Imagen: ". $id_imagen);
+            Log::info("[APILawyer][UploadDoc] IMG: ". strlen($img));
+
+            $usuario = Documentos::uploadImg( $id_usuarios, $id_tipo_usuarios, $id_imagen, $img );
+            Log::info($usuario);
+
+            if($usuario[0]->save == 1) {
+
+                Log::info('[APILawyer][UploadDoc] Se registro el documento en todas las tablas, creando permisos');
+
+                $permisos_inter_object = Permisos_inter::createPermisoInterAbogado($usuario[0]->id);
+
+                if ($permisos_inter_object[0]->save == 1) {
+
+                    $permisos_inter_object = Permisos_inter::lookForByIdAbogado($usuario[0]->id)->get();
+                    $permisos_inter = array();
+                    foreach($permisos_inter_object as $permiso){
+                        $permisos_inter[] = $permiso["id_permisos"];
+                    }
+            
+                    Log::info("[API][UploadDoc] Permisos: ");
+                    Log::info($permisos_inter);
+                    
+                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                    $responseJSON->data = $usuario;
+                    return json_encode($responseJSON);
+
+                }
+
+            }
+
+            else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+
+        } else {
+            abort(404);
         }
     }
 
