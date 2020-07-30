@@ -46,7 +46,9 @@ class Abogado extends Model
         //activar log query
         DB::connection()->enableQueryLog();
 
-        $sql = $query->get();
+        $sql = $query->where([
+          ['activo', '=', '1']
+        ])->get();
 
         //log query
         $queries = DB::getQueryLog();
@@ -54,8 +56,6 @@ class Abogado extends Model
         Log::info($last_query);
 
         return $sql;
-
-
     }
 
     public function scopeGetProfile($query, $id_user){
@@ -156,7 +156,52 @@ class Abogado extends Model
         Log::info($last_query);
 
         return $sql;
-  }
+    }
+
+    public function scopeChangeActivoLaw($query, $id_usuarios, $status){
+      
+      Log::info("[Abogado][scopeChangeActivoLaw]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_abogado', '=' , $id_usuarios]
+        ])->update([
+          'activo' => $status
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+
+    }
+
+    public function scopeGetActivoLaw($query, $id_usuario){
+
+      Log::info("[Contacto_emergencia][scopeGetImg]");
+      Log::info("[Contacto_emergencia][scopeGetImg] ID Usuario:" .  $id_usuario);
+
+      // $pass = hash("sha256", $pass);
+
+
+      //activar log query
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_abogado', '=', $id_usuario]
+      ])->select('activo')->get();
+
+
+      //log query
+      $queries = DB::getQueryLog();
+      $last_query = end($queries);
+      Log::info($last_query);
+
+      return $sql;
+
+    }
 
 }
 ?>

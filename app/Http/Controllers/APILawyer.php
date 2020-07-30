@@ -14,7 +14,9 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Library\DAO\Abogado;
 use App\Library\DAO\Servicios;
 use App\Library\DAO\Documentos;
+use App\Library\DAO\Empresa;
 use App\Library\DAO\Permisos_inter;
+use App\Library\DAO\Usuarios;
 use App\Library\VO\ResponseJSON;
 use Session;
 use Validator;
@@ -143,8 +145,8 @@ class APILawyer extends Controller
         if($request->isMethod('GET')) {
             
             header('Access-Control-Allow-Origin: *');
-            header('Access-Control-Allow-Methods: *');
-            header('Access-Control-Allow-Headers: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
 
            /* Validator::make($request->all(), [
                 'correo' => 'required'
@@ -162,7 +164,54 @@ class APILawyer extends Controller
                 $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
                 $responseJSON->data = $usuario;
                 // $responseJSON->token = $jwt_token->get();
-                return json_encode($responseJSON->data);
+                return json_encode($responseJSON);
+        
+            
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+            
+        } else {
+            abort(404);
+        }
+    }
+
+    public function DespachosCards(Request $request){
+      
+        Log::info('[APILawyer][DespachosCards]');
+
+        Log::info("[APILawyer][DespachosCards] Método Recibido: ". $request->getMethod());
+
+
+        if($request->isMethod('GET')) {
+            
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+           /* Validator::make($request->all(), [
+                'correo' => 'required'
+              ])->validate();
+            */
+            
+            // $correo = $request->input('correo');        
+            // Log::info("[APIAdmin][Prueba] correo: ". $correo);
+                
+            $usuario = Empresa::despachosCards();
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+        
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                $responseJSON->data = $usuario;
+                // $responseJSON->token = $jwt_token->get();
+                return json_encode($responseJSON);
         
             
     

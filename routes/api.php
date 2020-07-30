@@ -33,6 +33,12 @@ Route::get('/getServices', 'API@GetServices');
 Route::get('/regEmpresa', 'API@EmpresaPost');
 // Valoracion
 Route::get('/valoracion', 'API@Valoracion');
+// Cambiar Activacion
+Route::get('/changeActivo', 'API@ChangeActivo');
+// Get Activacion
+Route::get('/getActivo', 'API@GetActivo');
+//Get Despachos
+Route::get('/getEmpresa', 'API@GetEmpresas');
 
 
 /* 
@@ -59,6 +65,9 @@ Route::get('/lawyer/registrar', 'APILawyer@Registrar');
 
 // Show de abogados
 Route::get('/lawyer/abogadosCards', 'APILawyer@AbogadosCards');
+
+// Show Despachos
+Route::get('/lawyer/despachosCards', 'APILawyer@DespachosCards');
 
 // Get Perfil abogados
 Route::get('/lawyer/getProfile', 'APILawyer@GetProfile');

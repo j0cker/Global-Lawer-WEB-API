@@ -24,8 +24,7 @@ class Usuarios extends Model
     //public $attributes;
 
 
-    public function scopeLookForByEmailAndPass($query, $email, $pass)
-    {
+    public function scopeLookForByEmailAndPass($query, $email, $pass){
 
         Log::info("[Usuarios][scopeLookForByEmailAndPass]");
 
@@ -103,7 +102,52 @@ class Usuarios extends Model
         Log::info($last_query);
 
         return $sql;
-  }
+    }
+
+    public function scopeChangeActivoLaw($query, $id_usuarios, $status){
+      
+      Log::info("[Usuarios][scopeChangeActivoLaw]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_usuarios', '=' , $id_usuarios]
+        ])->update([
+          'activo' => $status
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+
+    }
+
+    public function scopeGetActivoLaw($query, $id_usuario){
+
+      Log::info("[Contacto_emergencia][scopeGetImg]");
+      Log::info("[Contacto_emergencia][scopeGetImg] ID Usuario:" .  $id_usuario);
+
+      // $pass = hash("sha256", $pass);
+
+
+      //activar log query
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_usuarios', '=', $id_usuario]
+      ])->select('activo')->get();
+
+
+      //log query
+      $queries = DB::getQueryLog();
+      $last_query = end($queries);
+      Log::info($last_query);
+
+      return $sql;
+
+    }
 
 }
 ?>

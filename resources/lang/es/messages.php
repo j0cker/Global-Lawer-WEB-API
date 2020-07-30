@@ -71,5 +71,6 @@ return [
     'VerifiedCode' => "El código de verificación es correcto.",
     'errorsVerifiedCode' => "El código de verificación es incorrecto.",
     'errorsCedula' => "La cédula profesional no existe.",
+    'errorsActivo' => "Error al cambiar de actividad en el abogado.",
 
 ];

@@ -184,15 +184,29 @@ class API extends Controller
             $tipo_usuario = $request->input('tipo_usuario');
             $id_responsable = $request->input('id_responsable');
             $nombre = $request->input('nombre');
+            $corrreoResponsable = $request->input('corrreoResponsable');
+            $telefono = $request->input('telefono');
             $giro = $request->input('giro');
+            $tiempoConstitucion = $request->input('tiempoConstitucion');
+            $servicio = $request->input('servicio');
+            $acercaDe = $request->input('acercaDe');
 
             Log::info("[API][EmpresaPost] Tipo de Usuario: ". $tipo_usuario);
             Log::info("[API][EmpresaPost] ID Responsable: ". $id_responsable);
             Log::info("[API][EmpresaPost] Nombre: ". $nombre);
+            Log::info("[API][EmpresaPost] Correo: ". $corrreoResponsable);
+            Log::info("[API][EmpresaPost] Telefono: ". $telefono);
             Log::info("[API][EmpresaPost] Giro: ". $giro);
-        
-                
-            $usuario = Empresa::createEmpresa($tipo_usuario, $id_responsable, $nombre, $giro);
+            Log::info("[API][EmpresaPost] Tiempo de Constitucion de la Empresa: ". $tiempoConstitucion);
+            Log::info("[API][EmpresaPost] Servicios: ". $servicio);
+            Log::info("[API][EmpresaPost] Acerca de: ". $acercaDe);        
+            
+            if ( $tipo_usuario === '0' ) {
+            } else if ( $tipo_usuario === '1' ) {
+                $usuario = Empresa::createEmpresaLaw($tipo_usuario, $id_responsable, $nombre, $corrreoResponsable, $telefono, $giro, $tiempoConstitucion, $servicio, $acercaDe);
+            }
+
+
             Log::info($usuario);
     
             if($usuario[0]->save == 1){
@@ -246,6 +260,60 @@ class API extends Controller
     
             return "";
             
+        } else {
+            abort(404);
+        }
+    }
+
+    public function GetEmpresas(Request $request){
+      
+        Log::info('[API][GetEmpresas]');
+
+        Log::info("[API][GetEmpresas] Método Recibido: ". $request->getMethod());
+
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+            /*
+            Validator::make($request->all(), [
+                'nombre' => 'required',
+                'apellido' => 'required',
+                'correo' => 'required',
+                'telefono' => 'required',
+                'cel' => 'required',
+              ])->validate();
+            */    
+              //Log::info('[APIUserNormal][registrar]2');
+            
+            $tipo_usuario = $request->input('tipo_usuario');
+            $id_responsable = $request->input('id_usuario');
+
+            Log::info("[API][EmpresaPost] Tipo de Usuario: ". $tipo_usuario);
+            Log::info("[API][EmpresaPost] ID Responsable: ". $id_responsable);
+            
+            $usuario = Empresa::getDespachos($tipo_usuario, $id_responsable);
+
+
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+            
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.BDempty'), count($usuario));
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+    
+            }
+                
         } else {
             abort(404);
         }
@@ -625,6 +693,115 @@ class API extends Controller
     
             } else {
                 $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsChangePass'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+        }
+    }
+
+    public function ChangeActivo(Request $request){
+  
+        Log::info('[API][ChangeActivoLaw]');
+
+        Log::info("[API][ChangeActivoLaw] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+
+            $this->validate($request, [
+                'token' => 'required',
+              ]);
+
+            $token = $request->input('token');
+            $tipo_usuario = $request->input('tipo_usuario');
+            $id_usuario = $request->input('id_usuario');
+            $status = $request->input('status');
+
+            Log::info('[API][ChangeActivoLaw] Token: ' . $token);
+            Log::info('[API][ChangeActivoLaw] Tipo Usuario: ' . $tipo_usuario);
+            Log::info('[API][ChangeActivoLaw] ID Usuario: ' . $id_usuario);
+            Log::info('[API][ChangeActivoLaw] Status: ' . $status);
+
+            if( $tipo_usuario == '0' ) {
+                $usuario = Usuarios::changeActivoLaw($id_usuario, $status);
+            } else if( $tipo_usuario == '1' ) {
+                $usuario = Abogado::changeActivoLaw($id_usuario, $status);
+            }
+            $usuario2 = Empresa::changeActivoLaw($id_usuario, $tipo_usuario, $status);
+ 
+            Log::info($usuario);
+            Log::info($usuario2);
+            if($usuario == 1 && $usuario2 == 1){
+
+                Log::info('[API][ChangeActivoLaw] El abogado ha cambiado de actividad');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsActivo'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+        }
+    }
+
+    public function GetActivo(Request $request){
+  
+        Log::info('[API][GetActivo]');
+
+        Log::info("[API][GetActivo] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+            /*
+            $this->validate($request, [
+                'token' => 'required',
+              ]);
+            */
+
+            // $token = $request->input('token');
+            $tipo_usuario = $request->input('tipo_usuario');
+            $id_usuario = $request->input('id_usuario');
+
+            // Log::info('[API][GetActivo] Token: ' . $token);
+            Log::info('[API][GetActivo] Tipo Usuario: ' . $tipo_usuario);
+            Log::info('[API][GetActivo] ID Usuario: ' . $id_usuario);
+
+            if( $tipo_usuario == '0' ) {
+                $usuario = Usuarios::getActivoLaw($id_usuario);
+            } else if( $tipo_usuario == '1' ) {
+                $usuario = Abogado::getActivoLaw($id_usuario);
+            }
+ 
+            Log::info($usuario);
+            if(count($usuario)>0){
+
+                Log::info('[API][GetActivo] El abogado ha cambiado de actividad');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.BDempty'), 0);
                 $responseJSON->data = $usuario;
                 return json_encode($responseJSON);
         
