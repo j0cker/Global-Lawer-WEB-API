@@ -82,4 +82,5 @@ Route::get('/lawyer/changeStatusServicio', 'API@ChangeStatusServicio');
 // Actualizar Abogado
 Route::get('/lawyer/updateLaw', 'APILawyer@UpdateLaw');
 
-/* Texto de prueba */
+//Lanzador de Correos Electrónicos
+Route::get('/mailsLauncher', 'MailsLauncher@mailsLauncher');
