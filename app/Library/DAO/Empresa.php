@@ -112,7 +112,7 @@ class Empresa extends Model
       return $sql;
     }
 
-    public function scopeGetDespachos($query, $id_usuario){
+    public function scopeGetDespachos($query, $tipo_usuario, $id_usuario){
 
       Log::info("[Usuarios][scopeGetDespachos]");
 
@@ -122,9 +122,16 @@ class Empresa extends Model
       //activar log query
       DB::connection()->enableQueryLog();
 
-      $sql = $query->where([
-        ['id_abogado', '=', $id_usuario],
-      ])->get();
+      if($tipo_usuario == '0') {
+        $sql = $query->where([
+          ['id_usuarios', '=', $id_usuario],
+        ])->get();
+      } else if($tipo_usuario == '1') {
+        $sql = $query->where([
+          ['id_abogado', '=', $id_usuario],
+        ])->get();
+      }
+
 
       //log query
       $queries = DB::getQueryLog();

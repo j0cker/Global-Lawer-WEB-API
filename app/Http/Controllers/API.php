@@ -201,10 +201,8 @@ class API extends Controller
             Log::info("[API][EmpresaPost] Servicios: ". $servicio);
             Log::info("[API][EmpresaPost] Acerca de: ". $acercaDe);        
             
-            if ( $tipo_usuario === '0' ) {
-            } else if ( $tipo_usuario === '1' ) {
-                $usuario = Empresa::createEmpresaLaw($tipo_usuario, $id_responsable, $nombre, $corrreoResponsable, $telefono, $giro, $tiempoConstitucion, $servicio, $acercaDe);
-            }
+            $usuario = Empresa::createEmpresaLaw($tipo_usuario, $id_responsable, $nombre, $corrreoResponsable, $telefono, $giro, $tiempoConstitucion, $servicio, $acercaDe);
+
 
 
             Log::info($usuario);

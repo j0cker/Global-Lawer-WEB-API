@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Lang;
 use App;
+use App\Library\CLASSES\QueueMails;
 use Config;
 use Auth;
 use carbon\Carbon;
@@ -140,6 +141,19 @@ class APIUserNormal extends Controller
                 $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
 
                 if ($permisos_inter_object[0]->save == 1) {
+
+                    $data['name'] = $nombre . ' ' . $apellido;
+                    //Send to queue email list of administrator mail
+                    $data['user_id'] = $usuario[0]->id;
+                    $data['tipo'] = "Usuario";
+                    $data['email'] = $correo;
+                    $data['password'] = $pass;
+                    $data['verification_code'] = 1234;
+                    //$data['body'] = "".Lang::get('messages.emailSubscribeBody')."".$email."";
+                    //$data['subject'] = Lang::get('messages.emailSubscribeSubject');
+                    //$data['priority'] = 1;
+                    $mail = new QueueMails($data);
+                    $mail->welcome();
 
                     $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario[0]->id)->get();
                     $permisos_inter = array();
