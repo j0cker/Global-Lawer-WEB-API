@@ -49,9 +49,11 @@ $style = [
                                         </h1>
 
                                         <p style="{{ $style['paragraph'] }}">
-                                            Apreciamos su elección de ser parte de nosotros. Estamos comprometidos con usted, ¡así que le brindaremos el mejor servicio !.<br /><br />
+                                            Agradecemos tu confianza por formar parte de nuestra comunidad. Estamos comprometidos contigo para brindarte la mejor experiencia en vinculación legal.<br /><br />
 
-                                            Tu usuario es el siguiente:<br /><br />
+                                            Tus datos han sido registrados correctamente.<br /><br />
+
+                                            A continuación te confirmamos los mismos:<br /><br />
 
                                             Correo: {{ $email }}<br />
                                             Contraseña: {{ $password }}<br /><br />

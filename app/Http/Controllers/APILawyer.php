@@ -94,7 +94,7 @@ class APILawyer extends Controller
                 //$data['subject'] = Lang::get('messages.emailSubscribeSubject');
                 //$data['priority'] = 1;
                 $mail = new QueueMails($data);
-                    $mail->welcome();
+                $mail->welcome();
 
                 $permisos_inter_object = Permisos_inter::createPermisoInterAbogado($usuario[0]->id);
 

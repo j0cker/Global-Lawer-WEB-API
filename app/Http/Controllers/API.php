@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Lang;
 use App;
+use App\Library\CLASSES\QueueMails;
 use Config;
 use Auth;
 use carbon\Carbon;
@@ -673,15 +674,47 @@ class API extends Controller
             $token = $request->input('token');
             $id_servicio = $request->input('id_servicio');
             $status = $request->input('status');
+            $email = 'luisdcm10@gmail.com';
 
             Log::info('[APIUsuarios][ChangeStatusServicio] Token: ' . $token);
             Log::info('[APIUsuarios][ChangeStatusServicio] ID Servicio: ' . $id_servicio);
             Log::info('[APIUsuarios][ChangeStatusServicio] Status: ' . $status);
+            Log::info('[APIUsuarios][ChangeStatusServicio] Email: ' . $email);
 
             $usuario = Servicios::changeStatusServicio($id_servicio, $status);
  
             Log::info($usuario);
             if($usuario == 1){
+
+                if ( $status === '2' ) {
+
+                    $data['name'] = '';
+                    //Send to queue email list of administrator mail
+                    $data['user_id'] = '1';
+                    $data['to'] = $email;
+                    $data['priority'] = '2';
+                    $data['tipo'] = 'Servicio';
+                    $data['subject'] = 'Descuento Legal Partners';
+                    $data['body'] = "El abogado de tu elección ha aceptado el servicio solicitado. Al hacerlo, se compromete a otorgarte un <strong>20% de descuento</strong> sobre el monto total de los honorarios generados al finalizar el servicio. <br><br> ¡Recuerda exigir tu descuento al finalizar el mismo!";
+                    // $data['subject'] = Lang::get('messages.emailSubscribeSubject');
+                    //$data['priority'] = 1;
+                    $mail = new QueueMails($data);
+                    $mail->customMailUnique();
+                } else if ( $status === '1' ) {
+
+                    $data['name'] = '';
+                    //Send to queue email list of administrator mail
+                    $data['user_id'] = '1';
+                    $data['to'] = $email;
+                    $data['priority'] = '2';
+                    $data['tipo'] = 'Servicio';
+                    $data['subject'] = 'Respuesta de servicio';
+                    $data['body'] = "El abogado ha rechazado tu solicitud de servicio";
+                    // $data['subject'] = Lang::get('messages.emailSubscribeSubject');
+                    //$data['priority'] = 1;
+                    $mail = new QueueMails($data);
+                    $mail->customMailUnique();
+                }
 
                 Log::info('[APIUsuarios][ChangePassword] Se actualizo los datos de la moto en la tabla Motos');
                     
