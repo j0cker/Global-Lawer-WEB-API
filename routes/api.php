@@ -39,7 +39,8 @@ Route::get('/changeActivo', 'API@ChangeActivo');
 Route::get('/getActivo', 'API@GetActivo');
 //Get Despachos
 Route::get('/getEmpresa', 'API@GetEmpresas');
-
+// Change Password
+Route::get('/changePassword', 'API@ChangePassword');
 
 /* 
 ******************** End Points Normal User ********************

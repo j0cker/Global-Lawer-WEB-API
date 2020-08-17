@@ -809,4 +809,54 @@ class API extends Controller
         }
     }
 
+    public function ChangePassword(Request $request){
+  
+        Log::info('[API][ChangePassword]');
+
+        Log::info("[API][ChangePassword] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            /*
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: *');
+            header('Access-Control-Allow-Headers: *');
+            */
+
+            $this->validate($request, [
+                'celular' => 'required',
+                'password' => 'required'
+              ]);
+
+            Log::info('[API][ChangePassword] Conectado');
+            $usuario = $request->input('usuario');
+            $celular = $request->input('celular');
+            $password = $request->input('password');
+
+            if( $usuario == '0' ) {
+                $usuario = Usuarios::changePassword($celular,$password);
+            } else if( $usuario == '1' ) {
+                $usuario = Abogado::changePassword($celular,$password);
+            }
+  
+            Log::info($usuario);
+            if($usuario == 1){
+
+                Log::info('[API][ChangePassword] Se actualizo la contraseña');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsChangePass'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+        }
+    }
+
 }

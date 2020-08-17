@@ -45,24 +45,24 @@ $style = [
                                     <td style="{{ $fontFamily }} {{ $style['email-body_cell'] }}">
                                         <!-- Greeting -->
                                         <h1 style="{{ $style['header-1'] }}">
-                                            Hey {{$name}}, Welcome to <a href="{{ url('/') }}">{{ Config::get('app.name') }}</a>.
+                                            Hola {{$name}}, Bienvenido(a) a <a href="{{ url('/') }}">{{ Config::get('app.name') }}</a>.
                                         </h1>
 
                                         <p style="{{ $style['paragraph'] }}">
-                                            We appreciated your selection of being part of us. We are committed with you, so we are going to give you the best service ever!.<br /><br />
+                                            Apreciamos su elección de ser parte de nosotros. Estamos comprometidos con usted, ¡así que le brindaremos el mejor servicio !.<br /><br />
 
-                                            Your login is going to be:<br /><br />
+                                            Tu usuario es el siguiente:<br /><br />
 
-                                            Mail: {{ $email }}<br />
-                                            Pass: {{ $password }}<br /><br />
+                                            Correo: {{ $email }}<br />
+                                            Contraseña: {{ $password }}<br /><br />
 
-                                            <font color="red">In order to get your account ready, please click the button below to confirm your email</font><br /><br />
+                                            <!--<font color="red">In order to get your account ready, please click the button below to confirm your email</font><br /><br />-->
 
                                         </p>
 
 
                                         <!-- Action Button -->
-                                        <table style="{{ $style['body_action'] }}" align="center" width="100%" cellpadding="0" cellspacing="0">
+                                        <!--<table style="{{ $style['body_action'] }}" align="center" width="100%" cellpadding="0" cellspacing="0">
                                             <tr>
                                                 <td align="center">
 
@@ -74,10 +74,10 @@ $style = [
                                                     </a>
                                                 </td>
                                             </tr>
-                                        </table>
+                                        </table>-->
 
                                         <!-- Button Paragraph -->
-                                        <table style="{{ $style['body_sub'] }}">
+                                        <!--<table style="{{ $style['body_sub'] }}">
                                             <tr>
                                                 <td style="{{ $fontFamily }}">
                                                     <p style="{{ $style['paragraph-sub'] }}">
@@ -91,5 +91,5 @@ $style = [
                                                     </p>
                                                 </td>
                                             </tr>
-                                        </table>
+                                        </table>-->
     @stop

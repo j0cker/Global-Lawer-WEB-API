@@ -149,5 +149,27 @@ class Usuarios extends Model
 
     }
 
+    public function scopeChangePassword($query, $celular,$password){
+      
+      Log::info("[Usuarios][scopeChangePassword]");
+      DB::connection()->enableQueryLog();
+
+      $pass = hash("sha256", $password);
+
+      $sql = $query->where([
+        ['celular', '=' , $celular]
+        ])->update([
+          'pass' => $pass
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+
+    }
+
 }
 ?>
