@@ -577,4 +577,54 @@ class APILawyer extends Controller
         }
     }
 
+    public function AddServicios(Request $request) {
+     
+        Log::info('[APILawyer][AddServicios]');
+
+        Log::info("[APILawyer][AddServicios] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $token = $request->input('token');
+            $id_usuario = $request->input('id_usuario');
+            $servicio = $request->input('servicio');
+
+            Log::info("[APILawyer][UpdateLaw] Token: ". $id_usuario);
+            Log::info("[APILawyer][UpdateLaw] ID Usuario: ". $id_usuario);
+            Log::info("[APILawyer][UpdateLaw] Servicios: ". $servicio);
+
+            $usuario = Abogado::addServicios($id_usuario, $servicio);
+        
+            Log::info($usuario);
+    
+            if($usuario == 1){
+            
+                Log::info('[APIUsuarios][UpdateLaw] Se actualizo los datos de usuario en la tabla Usuarios');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+
+        }
+    }
+
 }

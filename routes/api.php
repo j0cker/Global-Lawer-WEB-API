@@ -41,6 +41,8 @@ Route::get('/getActivo', 'API@GetActivo');
 Route::get('/getEmpresa', 'API@GetEmpresas');
 // Change Password
 Route::get('/changePassword', 'API@ChangePassword');
+//Lanzador de Correos Electrónicos
+Route::get('/mailsLauncher', 'MailsLauncher@mailsLauncher');
 
 /* 
 ******************** End Points Normal User ********************
@@ -83,5 +85,5 @@ Route::get('/lawyer/changeStatusServicio', 'API@ChangeStatusServicio');
 // Actualizar Abogado
 Route::get('/lawyer/updateLaw', 'APILawyer@UpdateLaw');
 
-//Lanzador de Correos Electrónicos
-Route::get('/mailsLauncher', 'MailsLauncher@mailsLauncher');
+// Cambiar Status Pedidos
+Route::get('/lawyer/addServicios', 'APILawyer@AddServicios');

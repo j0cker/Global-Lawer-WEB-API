@@ -225,5 +225,25 @@ class Abogado extends Model
 
     }
 
+    public function scopeAddServicios($query, $id_usuario, $servicio){
+      
+      Log::info("[Abogado][scopeChangePassword]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_abogado', '=' , $id_usuario]
+        ])->update([
+          'servicio' => $servicio
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+
+    }
+
 }
 ?>
