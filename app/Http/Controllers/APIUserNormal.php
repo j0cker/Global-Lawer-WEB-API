@@ -337,6 +337,19 @@ class APIUserNormal extends Controller
             Log::info($usuario);
             if($usuario == 1){
 
+                $data['name'] = $nombre . ' ' . $apellido;
+                //Send to queue email list of administrator mail
+                $data['user_id'] = $usuario[0]->id;
+                $data['tipo'] = "Abogado";
+                $data['email'] = $correo;
+                $data['password'] = $password;
+                $data['verification_code'] = 1234;
+                //$data['body'] = "".Lang::get('messages.emailSubscribeBody')."".$email."";
+                //$data['subject'] = Lang::get('messages.emailSubscribeSubject');
+                //$data['priority'] = 1;
+                $mail = new QueueMails($data);
+                $mail->welcome();
+
                 Log::info('[APIUsuarios][ChangePassword] Se actualizo los datos de la moto en la tabla Motos');
                     
                 $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
