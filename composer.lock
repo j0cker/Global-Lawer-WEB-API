@@ -2286,11 +2286,7 @@
                 "shasum": ""
             },
             "require": {
-<<<<<<< HEAD
-                "php": ">=7.1.3"
-=======
                 "php": "^7.2.5"
->>>>>>> 1cfd2f9c5170cf9c7da0f5d56c1f3cb918c2b606
             },
             "type": "library",
             "extra": {
