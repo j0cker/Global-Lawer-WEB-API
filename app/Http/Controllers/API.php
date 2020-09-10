@@ -210,6 +210,19 @@ class API extends Controller
     
             if($usuario[0]->save == 1){
 
+                $data['name'] = 'Administrador';
+                //Send to queue email list of administrator mail
+                $data['user_id'] = '1';
+                $data['to'] = 'luisdcm10@gmail.com';
+                $data['priority'] = '3';
+                $data['tipo'] = 'Documentos';
+                $data['subject'] = 'Documentos para revisión';
+                $data['body'] = 'El Lic. ' . $nombre . ' ha enviado los documentos para su revisión. <br> Favor de revisarlos en el panel de administración y enviarle una respuesta.' ;
+                // $data['subject'] = Lang::get('messages.emailSubscribeSubject');
+                //$data['priority'] = 1;
+                $mail = new QueueMails($data);
+                $mail->customMailUnique();
+
                 Log::info('[APIUsuarios][registar] Se registro el usuario en todas las tablas, creando permisos');
 
                 $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
