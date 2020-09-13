@@ -87,3 +87,7 @@ Route::get('/lawyer/updateLaw', 'APILawyer@UpdateLaw');
 
 // Cambiar Status Pedidos
 Route::get('/lawyer/addServicios', 'APILawyer@AddServicios');
+
+/*   Stripe    */
+// post Stripe
+Route::post('/store', 'MyStripeController@store');
