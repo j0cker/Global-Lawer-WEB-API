@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Route for stripe payment form.
+Route::get('stripe', 'MyStripeController@stripe');
+
+// Route for stripe post request.
+Route::post('/make-payment', 'MyStripeController@pay');
