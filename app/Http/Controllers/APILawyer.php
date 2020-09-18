@@ -627,4 +627,40 @@ class APILawyer extends Controller
         }
     }
 
+    public function ReporteAbogado(Request $request) {
+     
+        Log::info('[APILawyer][ReporteAbogado]');
+
+        Log::info("[APILawyer][ReporteAbogado] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            // header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $data['name'] = 'Administrador';
+            //Send to queue email list of administrator mail
+            $data['user_id'] = '1';
+            $data['to'] = 'luisdcm10@gmail.com';
+            $data['priority'] = '3';
+            $data['tipo'] = 'Reporte';
+            $data['subject'] = 'Reporte de abogado';
+            $data['body'] = 'El Lic. Luis Crisóstomo ha reportado por el usuario Daniel Mayorga.' ;
+            // $data['subject'] = Lang::get('messages.emailSubscribeSubject');
+            //$data['priority'] = 1;
+            $mail = new QueueMails($data);
+            $mail->customMailUnique();
+    
+            return "";
+
+        }
+    }
+
 }

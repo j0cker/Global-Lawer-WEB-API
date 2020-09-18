@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Stripe\Stripe;
 use Stripe\Charge;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class MyStripeController extends Controller
 {
@@ -19,9 +20,9 @@ class MyStripeController extends Controller
         Log::info('[MyStripeController][store]');
         Log::info("[APILawyer][registar] Método Recibido: ". $request->getMethod());
 
-        if($request->isMethod('GET')) {
+        if($request->isMethod('POST')) {
 
-            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Origin: *');
 
             $tipo_usuario = $request->input('tipo_usuario');
             $id_despacho = $request->input('id_despacho');

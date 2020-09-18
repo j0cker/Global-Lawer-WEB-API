@@ -768,22 +768,26 @@ class API extends Controller
             $tipo_usuario = $request->input('tipo_usuario');
             $id_usuario = $request->input('id_usuario');
             $status = $request->input('status');
+            $cuenta = $request->input('cuenta');
 
             Log::info('[API][ChangeActivoLaw] Token: ' . $token);
             Log::info('[API][ChangeActivoLaw] Tipo Usuario: ' . $tipo_usuario);
             Log::info('[API][ChangeActivoLaw] ID Usuario: ' . $id_usuario);
             Log::info('[API][ChangeActivoLaw] Status: ' . $status);
+            Log::info('[API][ChangeActivoLaw] Cuenta: ' . $cuenta);
 
             if( $tipo_usuario == '0' ) {
                 $usuario = Usuarios::changeActivoLaw($id_usuario, $status);
             } else if( $tipo_usuario == '1' ) {
-                $usuario = Abogado::changeActivoLaw($id_usuario, $status);
+                $usuario = Abogado::changeActivoLaw($id_usuario, $status, $cuenta);
             }
-            $usuario2 = Empresa::changeActivoLaw($id_usuario, $tipo_usuario, $status);
+            if( $cuenta == '2') {
+                $usuario2 = Empresa::changeActivoLaw($id_usuario, $tipo_usuario, $status);
+            }
  
             Log::info($usuario);
-            Log::info($usuario2);
-            if($usuario == 1 && $usuario2 == 1){
+            // Log::info($usuario2);
+            if($usuario == 1 ) {
 
                 Log::info('[API][ChangeActivoLaw] El abogado ha cambiado de actividad');
                     

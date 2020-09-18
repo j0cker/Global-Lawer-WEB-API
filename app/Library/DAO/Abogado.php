@@ -47,7 +47,8 @@ class Abogado extends Model
         DB::connection()->enableQueryLog();
 
         $sql = $query->where([
-          ['activo', '=', '1']
+          ['activo', '=', '1'],
+          ['visible', '=', '1']
         ])->get();
 
         //log query
@@ -158,16 +159,26 @@ class Abogado extends Model
         return $sql;
     }
 
-    public function scopeChangeActivoLaw($query, $id_usuarios, $status){
+    public function scopeChangeActivoLaw($query, $id_usuarios, $status, $cuenta){
       
       Log::info("[Abogado][scopeChangeActivoLaw]");
       DB::connection()->enableQueryLog();
 
-      $sql = $query->where([
-        ['id_abogado', '=' , $id_usuarios]
-        ])->update([
-          'activo' => $status
-        ]);
+      if( $cuenta == '1' ) {
+        $sql = $query->where([
+          ['id_abogado', '=' , $id_usuarios]
+          ])->update([
+            'visible' => $status
+          ]);
+
+      } else if ( $cuenta == '2' ) {
+
+        $sql = $query->where([
+          ['id_abogado', '=' , $id_usuarios]
+          ])->update([
+            'activo' => $status
+          ]);
+      }
 
         //log query
         $queries = DB::getQueryLog();
