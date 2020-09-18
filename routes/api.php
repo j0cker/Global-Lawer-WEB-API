@@ -92,5 +92,5 @@ Route::get('/lawyer/addServicios', 'APILawyer@AddServicios');
 Route::get('/lawyer/reporteAbogado', 'APILawyer@ReporteAbogado');
 
 /*   Stripe    */
-// post Stripe
-Route::post('/store', 'MyStripeController@store');
+
+Route::post('/makePayment', 'MyStripeController@pay');

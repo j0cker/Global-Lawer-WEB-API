@@ -1,57 +1,40 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests;
+use Illuminate\Http\Request;
+use Stripe\Error\Card;
 use Stripe\Stripe;
 use Stripe\Charge;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
 
 class MyStripeController extends Controller
 {
 
-  /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request) {
+    public function chargeStripe(Request $request)
+    {
+        Log::info('[MyStripeController][chargeStripe]');
+        Log::info("[MyStripeController][chargeStripe] Método Recibido: ". $request->getMethod());
         
-        Log::info('[MyStripeController][store]');
-        Log::info("[APILawyer][registar] Método Recibido: ". $request->getMethod());
-
         if($request->isMethod('POST')) {
-
-            // header('Access-Control-Allow-Origin: *');
-
-            $tipo_usuario = $request->input('tipo_usuario');
-            $id_despacho = $request->input('id_despacho');
             
-            if ($tipo_usuario == '0') {
-
-                $stripe = Stripe::charges()->create([
-                    'source' => $request->get('id'),
-                    'currency' => 'MXN',
-                    'amount' => '500'
-                ]);
+            Log::info('[MyStripeController][chargeStripe]');
+            
+            //header('Access-Control-Allow-Origin: *');
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+     
+            //$token = request('stripeToken');
+     
+            $charge = Charge::create([
+                'source' => $request->get('id'),
+                'currency' => 'MXN',
+                'amount' => 500*100
+            ]);
     
-                return $stripe;
-                
-            } else if ($id_despacho != '0'){
-
-                $stripe = Stripe::charges()->create([
-                    'source' => $request->get('id'),
-                    'currency' => 'MXN',
-                    'amount' => '1500'
-                ]);
-    
-                return $stripe;
-
-            }
-
-
+            return $charge;
+            
         }
-
     }
+    
 }
   
