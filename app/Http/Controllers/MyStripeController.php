@@ -11,29 +11,29 @@ use Stripe\Charge;
 class MyStripeController extends Controller
 {
 
-    public function stripe()
-
+    public function chargeStripe(Request $request)
     {
-
-        return view('stripe');
-
-    }
-
-
-    public function pay(Request $request)
-    {
-        Stripe::setApiKey(config('services.stripe.secret'));
- 
-        $token = request('stripeToken');
- 
-        $charge = Charge::create([
-            'amount' => 500,
-            'currency' => 'mxn',
-            'description' => 'Test Book',
-            'source' => $token,
-        ]);
- 
-        return 'Payment Success!';
+        Log::info('[MyStripeController][chargeStripe]');
+        Log::info("[MyStripeController][chargeStripe] Método Recibido: ". $request->getMethod());
+        
+        if($request->isMethod('POST')) {
+            
+            Log::info('[MyStripeController][chargeStripe]');
+            
+            //header('Access-Control-Allow-Origin: *');
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+     
+            //$token = request('stripeToken');
+     
+            $charge = Charge::create([
+                'source' => $request->get('id'),
+                'currency' => 'MXN',
+                'amount' => 500*100
+            ]);
+    
+            return $charge;
+            
+        }
     }
     
 }
