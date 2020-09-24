@@ -126,16 +126,28 @@ class Servicios extends Model
         return $sql;
     }
 
-    public function scopeChangeStatusServicio($query, $id_servicio, $status){
+    public function scopeChangeStatusServicio($query, $id_servicio, $status, $startTime, $endTime){
       
       Log::info("[Servicios][scopeChangeStatusServicio]");
       DB::connection()->enableQueryLog();
 
-      $sql = $query->where([
-        ['id_servicios', '=' , $id_servicio]
-        ])->update([
-          'status' => $status
-        ]);
+      if($status === '3') {
+
+        $sql = $query->where([
+          ['id_servicios', '=' , $id_servicio]
+          ])->update([
+            'status' => $status,
+            'startTime' => $startTime
+          ]);
+      } else {
+
+        $sql = $query->where([
+          ['id_servicios', '=' , $id_servicio]
+          ])->update([
+            'status' => $status
+          ]);
+      }
+
 
         //log query
         $queries = DB::getQueryLog();

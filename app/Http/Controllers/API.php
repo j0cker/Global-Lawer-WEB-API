@@ -687,14 +687,19 @@ class API extends Controller
             $token = $request->input('token');
             $id_servicio = $request->input('id_servicio');
             $status = $request->input('status');
+            $startTime = $request->input('startTime');
+            $endTime = $request->input('endTime');
             $email = 'luisdcm10@gmail.com';
 
             Log::info('[APIUsuarios][ChangeStatusServicio] Token: ' . $token);
             Log::info('[APIUsuarios][ChangeStatusServicio] ID Servicio: ' . $id_servicio);
             Log::info('[APIUsuarios][ChangeStatusServicio] Status: ' . $status);
             Log::info('[APIUsuarios][ChangeStatusServicio] Email: ' . $email);
+            Log::info('[APIUsuarios][ChangeStatusServicio] StartTime: ' . $startTime);
+            Log::info('[APIUsuarios][ChangeStatusServicio] EndTime: ' . $endTime);
+            Log::info('[APIUsuarios][ChangeStatusServicio] Email: ' . $email);
 
-            $usuario = Servicios::changeStatusServicio($id_servicio, $status);
+            $usuario = Servicios::changeStatusServicio($id_servicio, $status, $startTime, $endTime);
  
             Log::info($usuario);
             if($usuario == 1){
