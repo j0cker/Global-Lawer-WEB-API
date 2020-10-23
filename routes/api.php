@@ -31,18 +31,30 @@ Route::post('/uploadDoc', 'APILawyer@UploadDoc');
 Route::get('/getServices', 'API@GetServices');
 // 
 Route::get('/regEmpresa', 'API@EmpresaPost');
+
 // Valoracion
 Route::get('/valoracion', 'API@Valoracion');
+
 // Cambiar Activacion
 Route::get('/changeActivo', 'API@ChangeActivo');
+
+// Cambiar Headhunter
+Route::get('/changeHeadHunterLaw', 'API@ChangeHeadHunterLaw');
+
 // Get Activacion
 Route::get('/getActivo', 'API@GetActivo');
+
 //Get Despachos
 Route::get('/getEmpresa', 'API@GetEmpresas');
+
 // Change Password
 Route::get('/changePassword', 'API@ChangePassword');
+
 //Lanzador de Correos Electrónicos
 Route::get('/mailsLauncher', 'MailsLauncher@mailsLauncher');
+
+//Lanzador de Push Notification
+Route::post('/notifications', 'API@PushNotification');
 
 /* 
 ******************** End Points Normal User ********************
@@ -85,12 +97,19 @@ Route::get('/lawyer/changeStatusServicio', 'API@ChangeStatusServicio');
 // Actualizar Abogado
 Route::get('/lawyer/updateLaw', 'APILawyer@UpdateLaw');
 
+// Actualizar Ubicacion Abogado
+Route::get('/lawyer/updateLawAddress', 'APILawyer@UpdateLawAddress');
+
+// Actualizar Cedula Abogado
+Route::get('/lawyer/updateLawCedula', 'APILawyer@UpdateLawCedula');
+
+Route::get('/lawyer/getServiciosUsuarios', 'APILawyer@GetServiciosUsuarios');
+
 // Cambiar Status Pedidos
 Route::get('/lawyer/addServicios', 'APILawyer@AddServicios');
 
 //Reportar Abogado
 Route::get('/lawyer/reporteAbogado', 'APILawyer@ReporteAbogado');
 
-/*   Stripe    */
-
+// Stripe
 Route::post('/makePayment', 'MyStripeController@chargeStripe');

@@ -368,14 +368,14 @@ class APILawyer extends Controller
             ])->validate();
             */
 
-            // $token = $request->input('token');
+            $tipo = $request->input('tipo');
             $cedula = $request->input('cedula');
 
-            // Log::info("[APILawyer][GetProfile] Token: ". $token);
+            Log::info("[APILawyer][GetLaw] Tipo: ". $tipo);
             Log::info("[APILawyer][GetLaw] Cedula Law: ". $cedula);
 
             // $id_usuarios = $token_decrypt["usr"]->id_usuarios;   
-            $usuario = Abogado::getProfile2($cedula);
+            $usuario = Abogado::getProfile2($tipo, $cedula);
         
             Log::info($usuario);
     
@@ -468,6 +468,142 @@ class APILawyer extends Controller
             Log::info("[APILawyer][UpdateLaw] Apellido: ". $apellido);
 
             $usuario = Abogado::updateLaw($id_abogado, $acercaDe, $nombre, $apellido);
+        
+            Log::info($usuario);
+    
+            if($usuario == 1){
+            
+                Log::info('[APIUsuarios][UpdateLaw] Se actualizo los datos de usuario en la tabla Usuarios');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+
+        }
+    }
+
+    public function UpdateLawCedula(Request $request) {
+     
+        Log::info('[APILawyer][UpdateLawCedula]');
+
+        Log::info("[APILawyer][UpdateLawCedula] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $id_abogado = $request->input('id_abogado');
+            $cedula = $request->input('cedula');
+
+            Log::info("[APILawyer][UpdateLawCedula] ID Abogado: ". $id_abogado);
+            Log::info("[APILawyer][UpdateLawCedula] Cédula: ". $cedula);
+
+            $usuario = Abogado::updateLawCedula($id_abogado, $cedula);
+        
+            Log::info($usuario);
+    
+            if($usuario == 1){
+            
+                Log::info('[APIUsuarios][UpdateLaw] Se actualizo los datos de usuario en la tabla Usuarios');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+
+        }
+    }
+
+    public function GetServiciosUsuarios(Request $request) {
+     
+        Log::info('[APILawyer][GetServiciosUsuarios]');
+
+        Log::info("[APILawyer][GetServiciosUsuarios] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $id_servicios = $request->input('id_servicios');
+
+            Log::info("[APILawyer][GetServiciosUsuarios] ID Usuarios: ". $id_servicios);
+
+            $usuario = Servicios::getServiciosUsuarios($id_servicios);
+        
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+            
+                Log::info('[APIUsuarios][UpdateLaw] Se actualizo los datos de usuario en la tabla Usuarios');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+
+        }
+    }
+
+    public function UpdateLawAddress(Request $request) {
+     
+        Log::info('[APILawyer][UpdateLawAddress]');
+
+        Log::info("[APILawyer][UpdateLawAddress] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            $id_abogado = $request->input('id_abogado');
+            $address = $request->input('address');
+
+            Log::info("[APILawyer][UpdateLawAddress] ID Abogado: ". $id_abogado);
+            Log::info("[APILawyer][UpdateLawAddress] Direccion: ". $address);
+
+            $usuario = Abogado::updateLawAddress($id_abogado, $address);
         
             Log::info($usuario);
     

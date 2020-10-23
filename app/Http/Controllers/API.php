@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Lang;
 use App;
+use App\Library\CLASSES\PushNotification;
 use App\Library\CLASSES\QueueMails;
 use Config;
 use Auth;
@@ -25,6 +26,55 @@ use App\Library\CLASSES\SMS;
 
 class API extends Controller
 {
+
+    public function PushNotification(Request $request){
+
+        Log::info('[API][PushNotification]');
+
+        Log::info("[API][PushNotification] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('POST')){
+
+            
+            header('Access-Control-Allow-Origin: *');
+
+            $validator = Validator::make($request->all(), [ 
+                //'token' => 'required',
+                'mensaje' => 'required',
+                'titulo' => 'required',
+                'id_dispositivo' => 'required',
+                
+            ]);
+
+            if($validator->fails()){
+
+                Log::info('[API][PushNotification] fails');
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'), 'Faltan campos', 0);
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+                
+            }
+
+            $mensaje = $request->input('mensaje');
+            $titulo = $request->input('titulo');
+            $id_dispositivo = $request->input('id_dispositivo');
+
+            Log::info("[APILawyer][UploadDoc] Mensaje: ". $mensaje);
+            Log::info("[APILawyer][UploadDoc] Titulo: ". $titulo);
+            Log::info("[APILawyer][UploadDoc] Id Dispositivo: ". $id_dispositivo);
+
+            $pushNotif = new PushNotification();
+            $status = $pushNotif->sendMessage('mensaje', 'titutlo', '63f3710b-d1c9-49bf-8220-dbe74cc0d681');
+
+            $return["allresponses"] = $status;
+            $return = json_encode( $return);
+            Log::info('[API][PushNotification]: ' . $status);
+
+
+        } else {
+            abort(404);
+        }
+    }
 
     public function Ingresar(Request $request){
       
@@ -51,6 +101,7 @@ class API extends Controller
             Log::info("[APIAdmin][ingresar] Tipo de Servicio: ". $serviceT);
             Log::info("[APIAdmin][ingresar] correo: ". $correo);
             Log::info("[APIAdmin][ingresar] contPass: ". $contPass);
+
 
             if( $serviceT == 0 ){
                 Log::info("[APIAdmin][ingresar] Tipo de Servicio: Busco");
@@ -149,7 +200,6 @@ class API extends Controller
                 }
 
             }
-
     
             return "";
             
@@ -313,7 +363,7 @@ class API extends Controller
             Log::info($usuario);
     
             if(count($usuario)>0){
-            
+
                 $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
                 $responseJSON->data = $usuario;
                 return json_encode($responseJSON);
@@ -789,6 +839,55 @@ class API extends Controller
             if( $cuenta == '2') {
                 $usuario2 = Empresa::changeActivoLaw($id_usuario, $tipo_usuario, $status);
             }
+ 
+            Log::info($usuario);
+            // Log::info($usuario2);
+            if($usuario == 1 ) {
+
+                Log::info('[API][ChangeActivoLaw] El abogado ha cambiado de actividad');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsActivo'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+        }
+    }
+
+    public function ChangeHeadHunterLaw(Request $request){
+  
+        Log::info('[API][ChangeHeadHunterLaw]');
+
+        Log::info("[API][ChangeHeadHunterLaw] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+            
+
+            $this->validate($request, [
+                'token' => 'required',
+              ]);
+
+            $token = $request->input('token');
+            $id_usuario = $request->input('id_usuario');
+            $status = $request->input('status');
+
+            Log::info('[API][ChangeHeadHunterLaw] Token: ' . $token);
+            Log::info('[API][ChangeHeadHunterLaw] ID Usuario: ' . $id_usuario);
+            Log::info('[API][ChangeHeadHunterLaw] Status: ' . $status);
+
+            $usuario = Abogado::changeHeadHunterLaw($id_usuario, $status);
  
             Log::info($usuario);
             // Log::info($usuario2);

@@ -53,9 +53,16 @@ class Servicios extends Model
         //activar log query
         DB::connection()->enableQueryLog();
           
-        $sql = $query->where([
-          ['id_usuarios', '=', $id_user],
-          ['status', '=', $status],
+        $sql = $query->leftJoin('abogado', 'abogado.id_abogado', '=', 'servicios.id_abogado')
+        ->leftJoin('usuarios', 'usuarios.id_usuarios', '=', 'servicios.id_usuarios')
+        ->selectRaw(
+          'servicios.*,
+          CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo,
+          CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr'
+      )
+        ->where([
+          ['servicios.id_usuarios', '=', $id_user],
+          ['servicios.status', '=', $status],
         ])->get();
 
         //log query
@@ -69,9 +76,16 @@ class Servicios extends Model
         //activar log query
         DB::connection()->enableQueryLog();
   
-        $sql = $query->where([
-          ['id_abogado', '=', $id_user],
-          ['status', '=', $status],
+        $sql = $query->leftJoin('usuarios', 'usuarios.id_usuarios', '=', 'servicios.id_usuarios')
+        ->leftJoin('abogado', 'abogado.id_abogado', '=', 'servicios.id_abogado')
+        ->selectRaw(
+          'servicios.*,
+          CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr,
+          CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo'
+      )
+        ->where([
+          ['servicios.id_abogado', '=', $id_user],
+          ['servicios.status', '=', $status],
         ])->get();
   
         //log query
@@ -157,6 +171,25 @@ class Servicios extends Model
         return $sql;
 
     }
+
+    public function scopeGetServiciosUsuarios($query, $id_servicios){
+
+      Log::info("[Servicios][scopeGetProfileById] id_servicios: " . $id_servicios);
+      /* Aquí se ocupa 4 joins con left para traer la información de acuerdo a la relación de dichas tablas */
+      DB::connection()->enableQueryLog();
+
+      $sql = $query   ->leftJoin('usuarios', 'usuarios.id_usuarios', '=', 'servicios.id_usuarios')
+                      ->where('servicios.id_servicios', '=', $id_servicios)
+                      ->get();
+
+      //log query
+      $queries = DB::getQueryLog();
+      $last_query = end($queries);
+      Log::info($last_query);
+
+      return $sql;
+
+  }
 
 }
 ?>

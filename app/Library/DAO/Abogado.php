@@ -82,7 +82,7 @@ class Abogado extends Model
 
     }
 
-    public function scopeGetProfile2($query, $cedula){
+    public function scopeGetProfile2($query, $tipo, $cedula){
 
         Log::info("[Abogado][scopeGetProfile2]");
 
@@ -92,14 +92,29 @@ class Abogado extends Model
         //activar log query
         DB::connection()->enableQueryLog();
 
-        $sql = $query->where([
-          ['cedula', '=', $cedula],
-        ])->get();
+        if( $tipo == 0) {
 
-        //log query
-        $queries = DB::getQueryLog();
-        $last_query = end($queries);
-        Log::info($last_query);
+          $sql = $query->where([
+            ['id_abogado', '=', $cedula],
+          ])->get();
+  
+          //log query
+          $queries = DB::getQueryLog();
+          $last_query = end($queries);
+          Log::info($last_query);
+
+        } else if( $tipo == 1) {
+
+          $sql = $query->where([
+            ['cedula', '=', $cedula],
+          ])->get();
+  
+          //log query
+          $queries = DB::getQueryLog();
+          $last_query = end($queries);
+          Log::info($last_query);
+
+        }
 
         return $sql;
 
@@ -159,6 +174,44 @@ class Abogado extends Model
         return $sql;
     }
 
+    public function scopeUpdateLawAddress( $query, $id_abogado, $address ){
+
+      Log::info("[Usuarios][scopeUpdateLaw]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_abogado', '=' , $id_abogado]
+        ])->update([
+          'address' => $address
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+    }
+
+    public function scopeUpdateLawCedula( $query, $id_abogado, $cedula ){
+
+      Log::info("[Usuarios][scopeUpdateLaw]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_abogado', '=' , $id_abogado]
+        ])->update([
+          'cedula' => $cedula
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+    }
+
     public function scopeChangeActivoLaw($query, $id_usuarios, $status, $cuenta){
       
       Log::info("[Abogado][scopeChangeActivoLaw]");
@@ -186,6 +239,34 @@ class Abogado extends Model
         Log::info($last_query);
 
         return $sql;
+
+    }
+
+    public function scopeChangeHeadHunterLaw($query, $id_usuarios, $status){
+      
+      Log::info("[Abogado][scopeChangeActivoLaw]");
+      DB::connection()->enableQueryLog();
+
+      if($status == '1') {
+        $sql = $query->where([
+          ['id_abogado', '=' , $id_usuarios]
+          ])->update([
+            'headHunter' => 'headHunter'
+          ]);
+      } else if ($status == '0') {
+        $sql = $query->where([
+          ['id_abogado', '=' , $id_usuarios]
+          ])->update([
+            'headHunter' => 'nohd'
+          ]);
+      }
+      
+      //log query
+      $queries = DB::getQueryLog();
+      $last_query = end($queries);
+      Log::info($last_query);
+
+      return $sql;
 
     }
 
