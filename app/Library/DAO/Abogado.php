@@ -336,6 +336,36 @@ class Abogado extends Model
         return $sql;
 
     }
+    
+    public function scopeUpdatePayment( $query, $id_abogado, $servicePayment, $amount ){
+
+      Log::info("[Usuarios][scopeUpdateLaw]");
+      DB::connection()->enableQueryLog();
+
+      if( $servicePayment === '1'){
+
+        $sql = $query->where([
+          ['id_abogado', '=' , $id_abogado]
+          ])->update([
+            'cost_presencial' => $amount
+          ]);
+      } else if( $servicePayment === '2'){
+
+        $sql = $query->where([
+          ['id_abogado', '=' , $id_abogado]
+          ])->update([
+            'cost_online' => $amount
+          ]);
+      }
+
+      
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+    }
 
 }
 ?>

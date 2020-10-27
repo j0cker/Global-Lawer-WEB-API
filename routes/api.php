@@ -97,6 +97,9 @@ Route::get('/lawyer/changeStatusServicio', 'API@ChangeStatusServicio');
 // Actualizar Abogado
 Route::get('/lawyer/updateLaw', 'APILawyer@UpdateLaw');
 
+// Actualizar Payment
+Route::get('/lawyer/updatePayment', 'APILawyer@UpdatePayment');
+
 // Actualizar Ubicacion Abogado
 Route::get('/lawyer/updateLawAddress', 'APILawyer@UpdateLawAddress');
 
