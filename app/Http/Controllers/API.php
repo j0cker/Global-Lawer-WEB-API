@@ -254,8 +254,6 @@ class API extends Controller
             
             $usuario = Empresa::createEmpresaLaw($tipo_usuario, $id_responsable, $nombre, $corrreoResponsable, $telefono, $giro, $tiempoConstitucion, $servicio, $acercaDe);
 
-
-
             Log::info($usuario);
     
             if($usuario[0]->save == 1){
@@ -273,45 +271,11 @@ class API extends Controller
                 $mail = new QueueMails($data);
                 $mail->customMailUnique();
 
-                Log::info('[APIUsuarios][registar] Se registro el usuario en todas las tablas, creando permisos');
 
-                $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
 
-                if ($permisos_inter_object[0]->save == 1) {
-
-                    $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario[0]->id)->get();
-                    $permisos_inter = array();
-                    foreach($permisos_inter_object as $permiso){
-                        $permisos_inter[] = $permiso["id_permisos"];
-                    }
-            
-                    $jwt_token = null;
-            
-                    $factory = JWTFactory::customClaims([
-                        'sub'   => $usuario[0]->id, //id a conciliar del usuario
-                        'iss'   => config('app.name'),
-                        'iat'   => Carbon::now()->timestamp,
-                        'exp'   => Carbon::tomorrow()->timestamp,
-                        'nbf'   => Carbon::now()->timestamp,
-                        'jti'   => uniqid(),
-                        'usr'   => $usuario[0],
-                        'permisos' => $permisos_inter,
-                    ]);
-                    
-                    $payload = $factory->make();
-                        
-                    $jwt_token = JWTAuth::encode($payload);
-                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
-                    Log::info("[API][ingresar] Permisos: ");
-                    Log::info($permisos_inter);
-                    
-                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
-                    $responseJSON->data = $usuario;
-                    $responseJSON->token = $jwt_token->get();
-                    return json_encode($responseJSON);
-
-                }        
-            
     
             } else {
                 $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));
@@ -419,45 +383,10 @@ class API extends Controller
     
             if($usuario[0]->save == 1){
 
-                Log::info('[APIUsuarios][Valoracion] Se registro el usuario en todas las tablas, creando permisos');
-
-                $permisos_inter_object = Permisos_inter::createPermisoInter($usuario[0]->id);
-
-                if ($permisos_inter_object[0]->save == 1) {
-
-                    $permisos_inter_object = Permisos_inter::lookForByIdUsuarios($usuario[0]->id)->get();
-                    $permisos_inter = array();
-                    foreach($permisos_inter_object as $permiso){
-                        $permisos_inter[] = $permiso["id_permisos"];
-                    }
-            
-                    $jwt_token = null;
-            
-                    $factory = JWTFactory::customClaims([
-                        'sub'   => $usuario[0]->id, //id a conciliar del usuario
-                        'iss'   => config('app.name'),
-                        'iat'   => Carbon::now()->timestamp,
-                        'exp'   => Carbon::tomorrow()->timestamp,
-                        'nbf'   => Carbon::now()->timestamp,
-                        'jti'   => uniqid(),
-                        'usr'   => $usuario[0],
-                        'permisos' => $permisos_inter,
-                    ]);
-                    
-                    $payload = $factory->make();
-                        
-                    $jwt_token = JWTAuth::encode($payload);
-                    Log::info("[API][ingresar] new token: ". $jwt_token->get());
-                    Log::info("[API][ingresar] Permisos: ");
-                    Log::info($permisos_inter);
-                    
-                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
-                    $responseJSON->data = $usuario;
-                    $responseJSON->token = $jwt_token->get();
-                    return json_encode($responseJSON);
-
-                }        
-            
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+          
     
             } else {
                 $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBDFail'), count($usuario));

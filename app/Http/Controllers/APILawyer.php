@@ -728,26 +728,9 @@ class APILawyer extends Controller
 
             if($usuario[0]->save == 1) {
 
-                Log::info('[APILawyer][UploadDoc] Se registro el documento en todas las tablas, creando permisos');
-
-                $permisos_inter_object = Permisos_inter::createPermisoInterAbogado($usuario[0]->id);
-
-                if ($permisos_inter_object[0]->save == 1) {
-
-                    $permisos_inter_object = Permisos_inter::lookForByIdAbogado($usuario[0]->id)->get();
-                    $permisos_inter = array();
-                    foreach($permisos_inter_object as $permiso){
-                        $permisos_inter[] = $permiso["id_permisos"];
-                    }
-            
-                    Log::info("[API][UploadDoc] Permisos: ");
-                    Log::info($permisos_inter);
-                    
-                    $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
-                    $responseJSON->data = $usuario;
-                    return json_encode($responseJSON);
-
-                }
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
 
             }
 

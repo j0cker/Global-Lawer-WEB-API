@@ -15,6 +15,7 @@ update and insert doesnt need get->()
 
 class Permisos_inter extends Model
 {
+
     public $table = 'permisos_inter';
     public $timestamps = true;
     //protected $dateFormat = 'U';
@@ -77,5 +78,7 @@ class Permisos_inter extends Model
 
       return $obj;
     }
+
 }
+
 ?>
