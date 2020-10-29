@@ -816,6 +816,14 @@ class APILawyer extends Controller
             ])->validate();
             */
 
+            $usuario = $request->input('usuario');
+            $abogado = $request->input('abogado');
+            $reporte = $request->input('reporte');
+
+            Log::info("[APILawyer][UpdateLaw] Usuario: ". $usuario);
+            Log::info("[APILawyer][UpdateLaw] Abogado: ". $abogado);
+            Log::info("[APILawyer][UpdateLaw] Reporte: ". $reporte);
+
             $data['name'] = 'Administrador';
             //Send to queue email list of administrator mail
             $data['user_id'] = '1';
@@ -823,7 +831,7 @@ class APILawyer extends Controller
             $data['priority'] = '3';
             $data['tipo'] = 'Reporte';
             $data['subject'] = 'Reporte de abogado';
-            $data['body'] = 'El Lic. Luis Crisóstomo ha reportado por el usuario Daniel Mayorga.' ;
+            $data['body'] = 'El usuario ' . $usuario . ' ha reportado al abogado ' . $abogado . '<br> Reporte: <br> "' . $reporte .'"' ;
             // $data['subject'] = Lang::get('messages.emailSubscribeSubject');
             //$data['priority'] = 1;
             $mail = new QueueMails($data);

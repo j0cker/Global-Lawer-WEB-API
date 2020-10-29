@@ -58,7 +58,8 @@ class Servicios extends Model
         ->selectRaw(
           'servicios.*,
           CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo,
-          CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr'
+          CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr,
+          abogado.cedula as cedulaAbo'
       )
         ->where([
           ['servicios.id_usuarios', '=', $id_user],
@@ -81,7 +82,8 @@ class Servicios extends Model
         ->selectRaw(
           'servicios.*,
           CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr,
-          CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo'
+          CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo,
+          abogado.cedula as cedulaAbo'
       )
         ->where([
           ['servicios.id_abogado', '=', $id_user],
@@ -100,7 +102,7 @@ class Servicios extends Model
       
     }
 
-    public function scopeServicePost($query, $id_abogado, $id_usuario, $payment, $descripcion){
+    public function scopeServicePost($query, $id_abogado, $id_usuario, $servicio, $descripcion){
 
       Log::info("[Usuarios][scopeCreateUser]");
 
@@ -108,7 +110,8 @@ class Servicios extends Model
 
       $usuarios->id_abogado = $id_abogado;
       $usuarios->id_usuarios = $id_usuario;
-      $usuarios->precio = $payment;
+      $usuarios->precio = '500';
+      $usuarios->tipo_servicio = $servicio;
       $usuarios->descripcion = $descripcion;
 
       $obj = Array();
