@@ -698,6 +698,7 @@ class APILawyer extends Controller
                 //'token' => 'required',
                 'id_usuarios' => 'required',
                 'id_tipo_usuarios' => 'required',
+                'id_empresa' => 'required',
                 'id_imagen' => 'required',
                 'img' => 'required'
                 
@@ -715,15 +716,17 @@ class APILawyer extends Controller
 
             $id_usuarios = $request->input('id_usuarios');
             $id_tipo_usuarios = $request->input('id_tipo_usuarios');
+            $id_empresa = $request->input('id_empresa');
             $id_imagen = $request->input('id_imagen');
             $img = $request->input('img');
 
             Log::info("[APILawyer][UploadDoc] ID Usuarios: ". $id_usuarios);
             Log::info("[APILawyer][UploadDoc] ID Tipo Usuarios: ". $id_tipo_usuarios);
+            Log::info("[APILawyer][UploadDoc] Id Empresa: ". $id_empresa);
             Log::info("[APILawyer][UploadDoc] Id Imagen: ". $id_imagen);
             Log::info("[APILawyer][UploadDoc] IMG: ". strlen($img));
 
-            $usuario = Documentos::uploadImg( $id_usuarios, $id_tipo_usuarios, $id_imagen, $img );
+            $usuario = Documentos::uploadImg( $id_usuarios, $id_tipo_usuarios, $id_empresa, $id_imagen, $img );
             Log::info($usuario);
 
             if($usuario[0]->save == 1) {

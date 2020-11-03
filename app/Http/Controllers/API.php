@@ -23,6 +23,7 @@ use App\Library\VO\ResponseJSON;
 use Session;
 use Validator;
 use App\Library\CLASSES\SMS;
+use App\Library\DAO\Documentos;
 
 class API extends Controller
 {
@@ -64,7 +65,7 @@ class API extends Controller
             Log::info("[APILawyer][UploadDoc] Id Dispositivo: ". $id_dispositivo);
 
             $pushNotif = new PushNotification();
-            $status = $pushNotif->sendMessage('mensaje', 'titutlo', '63f3710b-d1c9-49bf-8220-dbe74cc0d681');
+            $status = $pushNotif->sendMessage($mensaje, $titulo, $id_dispositivo);
 
             $return["allresponses"] = $status;
             $return = json_encode( $return);
@@ -323,6 +324,46 @@ class API extends Controller
             
             $usuario = Empresa::getDespachos($tipo_usuario, $id_responsable);
 
+
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.BDempty'), count($usuario));
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+    
+            }
+                
+        } else {
+            abort(404);
+        }
+    }
+
+    public function GetDocumentos(Request $request){
+      
+        Log::info('[API][GetDocumentos]');
+
+        Log::info("[API][GetDocumentos] Método Recibido: ". $request->getMethod());
+
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            
+            $tipo_usuario = $request->input('tipo_usuario');
+            $id_usuario = $request->input('id_usuario');
+
+            Log::info("[API][EmpresaPost] Tipo de Usuario: ". $tipo_usuario);
+            Log::info("[API][EmpresaPost] ID Usuario: ". $id_usuario);
+            
+            $usuario = Documentos::getDocumentos($tipo_usuario, $id_usuario);
 
             Log::info($usuario);
     

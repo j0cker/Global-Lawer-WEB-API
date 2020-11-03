@@ -47,6 +47,9 @@ Route::get('/getActivo', 'API@GetActivo');
 //Get Despachos
 Route::get('/getEmpresa', 'API@GetEmpresas');
 
+// Get Documentos
+Route::get('/getDocumentos', 'API@GetDocumentos');
+
 // Change Password
 Route::get('/changePassword', 'API@ChangePassword');
 
