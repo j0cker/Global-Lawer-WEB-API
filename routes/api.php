@@ -59,6 +59,9 @@ Route::get('/mailsLauncher', 'MailsLauncher@mailsLauncher');
 //Lanzador de Push Notification
 Route::post('/notifications', 'API@PushNotification');
 
+//Update ID Dispositivo
+Route::get('/updateIdDispositivo', 'API@UpdateIdDispositivo');
+
 /* 
 ******************** End Points Normal User ********************
 */

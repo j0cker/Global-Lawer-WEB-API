@@ -20,6 +20,25 @@ class Abogado extends Model
     const UPDATED_AT = 'updated_at';
     //public $attributes;
 
+    public function scopeUpdateIdDispositivo($query, $id_usuario,$idDispositivo){
+      
+      Log::info("[Abogado][scopeUpdateIdDispositivo]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_abogado', '=' , $id_usuario]
+        ])->update([
+          'id_dispositivo' => $idDispositivo
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+
+    }
 
     public function scopeLookForByEmailAndPass($query, $email, $pass){
 

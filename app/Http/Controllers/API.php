@@ -77,6 +77,55 @@ class API extends Controller
         }
     }
 
+    public function UpdateIdDispositivo(Request $request){
+  
+        Log::info('[API][UpdateIdDispositivo]');
+
+        Log::info("[API][UpdateIdDispositivo] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            /*
+            header('Access-Control-Allow-Methods: *');
+            header('Access-Control-Allow-Headers: *');
+            */
+
+            $tipo_usuario = $request->input('tipo_usuario');
+            $id_usuario = $request->input('id_usuario');
+            $idDispositivo = $request->input('idDispositivo');
+
+            Log::info("[API][UpdateIdDispositivo] Tipo Usuario: ". $tipo_usuario);
+            Log::info("[API][UpdateIdDispositivo] ID del Usuario: ". $id_usuario);
+            Log::info("[API][UpdateIdDispositivo] ID del Dispositivo: ". $idDispositivo);
+
+
+            if( $tipo_usuario == '0' ) {
+                $usuario = Usuarios::updateIdDispositivo($id_usuario,$idDispositivo);
+            } else if( $tipo_usuario == '1' ) {
+                $usuario = Abogado::updateIdDispositivo($id_usuario,$idDispositivo);
+            }
+  
+            Log::info($usuario);
+            if($usuario == 1){
+
+                Log::info('[API][UpdateIdDispositivo] Se actualizo el ID del dispositivo');
+                    
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDdata'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+    
+            } else {
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsChangePass'), 0);
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+        
+            }
+    
+            return "";
+        }
+    }
+
     public function Ingresar(Request $request){
       
         Log::info('[API][ingresar]');
