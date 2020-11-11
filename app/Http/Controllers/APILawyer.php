@@ -830,7 +830,7 @@ class APILawyer extends Controller
             $data['name'] = 'Administrador';
             //Send to queue email list of administrator mail
             $data['user_id'] = '1';
-            $data['to'] = 'luisdcm10@gmail.com';
+            $data['to'] = 'info@boogapp.mx';
             $data['priority'] = '3';
             $data['tipo'] = 'Reporte';
             $data['subject'] = 'Reporte de abogado';

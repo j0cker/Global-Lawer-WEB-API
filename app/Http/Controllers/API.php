@@ -311,7 +311,7 @@ class API extends Controller
                 $data['name'] = 'Administrador';
                 //Send to queue email list of administrator mail
                 $data['user_id'] = '1';
-                $data['to'] = 'luisdcm10@gmail.com';
+                $data['to'] = 'info@boogapp.mx';
                 $data['priority'] = '3';
                 $data['tipo'] = 'Documentos';
                 $data['subject'] = 'Documentos para revisión';
@@ -758,7 +758,7 @@ class API extends Controller
             $status = $request->input('status');
             $startTime = $request->input('startTime');
             $endTime = $request->input('endTime');
-            $email = 'luisdcm10@gmail.com';
+            $email = 'info@boogapp.mx';
 
             Log::info('[APIUsuarios][ChangeStatusServicio] Token: ' . $token);
             Log::info('[APIUsuarios][ChangeStatusServicio] ID Servicio: ' . $id_servicio);
@@ -781,7 +781,7 @@ class API extends Controller
                     $data['to'] = $email;
                     $data['priority'] = '2';
                     $data['tipo'] = 'Servicio';
-                    $data['subject'] = 'Descuento Legal Partners';
+                    $data['subject'] = 'Respuesta de servicio';
                     $data['body'] = "El abogado de tu elección ha aceptado el servicio solicitado. Al hacerlo, se compromete a otorgarte un <strong>20% de descuento</strong> sobre el monto total de los honorarios generados al finalizar el servicio. <br><br> ¡Recuerda exigir tu descuento al finalizar el mismo!";
                     // $data['subject'] = Lang::get('messages.emailSubscribeSubject');
                     //$data['priority'] = 1;
@@ -797,6 +797,20 @@ class API extends Controller
                     $data['tipo'] = 'Servicio';
                     $data['subject'] = 'Respuesta de servicio';
                     $data['body'] = "El abogado ha rechazado tu solicitud de servicio";
+                    // $data['subject'] = Lang::get('messages.emailSubscribeSubject');
+                    //$data['priority'] = 1;
+                    $mail = new QueueMails($data);
+                    $mail->customMailUnique();
+                } else if ( $status === '2.5' ) {
+
+                    $data['name'] = '';
+                    //Send to queue email list of administrator mail
+                    $data['user_id'] = '1';
+                    $data['to'] = $email;
+                    $data['priority'] = '2';
+                    $data['tipo'] = 'Servicio';
+                    $data['subject'] = 'Respuesta de servicio';
+                    $data['body'] = "El pago se ha relizado con éxito. <br> <strong>Resúmen de pago:</strong> <br> Total pagado: $500 MXN <br> Concepto: Match por servicio de abogado";
                     // $data['subject'] = Lang::get('messages.emailSubscribeSubject');
                     //$data['priority'] = 1;
                     $mail = new QueueMails($data);
