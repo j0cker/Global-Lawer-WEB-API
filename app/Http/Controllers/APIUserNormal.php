@@ -406,6 +406,52 @@ class APIUserNormal extends Controller
         }
     }
 
+    public function GetUser(Request $request) {
+     
+        Log::info('[APIUserNormal][GetUser]');
+
+        Log::info("[APIUserNormal][GetUser] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $tipo = $request->input('tipo');
+            $cedula = $request->input('cedula');
+
+            Log::info("[APIUserNormal][GetUser] Tipo: ". $tipo);
+            Log::info("[APIUserNormal][GetUser] Cedula Law: ". $cedula);
+
+            // $id_usuarios = $token_decrypt["usr"]->id_usuarios;   
+            $usuario = Usuarios::getProfile2( $cedula);
+        
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+            
+            $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+            $responseJSON->data = $usuario;
+            return json_encode($responseJSON);
+    
+            } else {
+    
+            $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($usuario));
+            $responseJSON->data = [];
+            return json_encode($responseJSON);
+    
+            }
+
+        }
+    }
+
     public function UpdateUser(Request $request) {
      
         Log::info('[APILawyer][UpdateUser]');

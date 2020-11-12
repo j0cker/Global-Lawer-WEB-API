@@ -72,6 +72,8 @@ Route::get('/normal_user/registrar', 'APIUserNormal@Registrar');
 Route::get('/normal_user/verifyCedula', 'APIUserNormal@VerifyCedula');
 // Get Perfil abogados
 Route::get('/normal_user/getProfile', 'APIUserNormal@GetProfile');
+Route::get('/normal_user/getUser', 'APIUserNormal@GetUser');
+
 // Registrar Servicio
 Route::get('/normal_user/servicePost', 'APIUserNormal@ServicePost');
 Route::get('/normal_user/servicePost2', 'APIUserNormal@ServicePost2');
