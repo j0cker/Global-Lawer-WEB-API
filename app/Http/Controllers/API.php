@@ -555,7 +555,7 @@ class API extends Controller
             Log::info('[APIUsuarios][SMS2] Celular: ' . $celular);
 
             $sms = new SMS();
-            $status = $sms->enviarMensaje('Haz recibidio una solicitud de servicio de abogado','+52'. $celular);
+            $status = $sms->enviarMensaje('Legal Partners: Haz recibidio una solicitud de servicio de abogado','+52'. $celular);
             Log::info('[APIUsuarios][SMS2] Mensaje enviado');
 
             $obj = Array();
@@ -604,7 +604,7 @@ class API extends Controller
             Log::info('[APIUsuarios][SMSConfirm] Celular Abogado: ' . $celAbogado);
 
             $sms = new SMS();
-            $status = $sms->enviarMensaje('El número de contacto de tu abogado es: ' . $celAbogado,'+52'. $celular);
+            $status = $sms->enviarMensaje('Legal Partners: El número de contacto de tu abogado es: ' . $celAbogado,'+52'. $celular);
             Log::info('[APIUsuarios][SMSConfirm] Mensaje enviado');
 
             $obj = Array();
@@ -758,6 +758,10 @@ class API extends Controller
             $status = $request->input('status');
             $startTime = $request->input('startTime');
             $endTime = $request->input('endTime');
+            $abogado = $request->input('abogado');
+            $usuario = $request->input('usuario');
+            $correoAbo = $request->input('correoAbo');
+            $correoUsr = $request->input('correoUsr');
             $email = 'info@boogapp.mx';
 
             Log::info('[APIUsuarios][ChangeStatusServicio] Token: ' . $token);
@@ -766,6 +770,10 @@ class API extends Controller
             Log::info('[APIUsuarios][ChangeStatusServicio] Email: ' . $email);
             Log::info('[APIUsuarios][ChangeStatusServicio] StartTime: ' . $startTime);
             Log::info('[APIUsuarios][ChangeStatusServicio] EndTime: ' . $endTime);
+            Log::info('[APIUsuarios][ChangeStatusServicio] Abogado: ' . $abogado);
+            Log::info('[APIUsuarios][ChangeStatusServicio] Usuario: ' . $usuario);
+            Log::info('[APIUsuarios][ChangeStatusServicio] Correo abogado: ' . $correoAbo);
+            Log::info('[APIUsuarios][ChangeStatusServicio] Correo usuario: ' . $correoUsr);
             Log::info('[APIUsuarios][ChangeStatusServicio] Email: ' . $email);
 
             $usuario = Servicios::changeStatusServicio($id_servicio, $status, $startTime, $endTime);
@@ -775,10 +783,10 @@ class API extends Controller
 
                 if ( $status === '2' ) {
 
-                    $data['name'] = '';
+                    $data['name'] = $usuario;
                     //Send to queue email list of administrator mail
                     $data['user_id'] = '1';
-                    $data['to'] = $email;
+                    $data['to'] = $correoUsr;
                     $data['priority'] = '2';
                     $data['tipo'] = 'Servicio';
                     $data['subject'] = 'Respuesta de servicio';
@@ -789,10 +797,10 @@ class API extends Controller
                     $mail->customMailUnique();
                 } else if ( $status === '1' ) {
 
-                    $data['name'] = '';
+                    $data['name'] = $usuario;
                     //Send to queue email list of administrator mail
                     $data['user_id'] = '1';
-                    $data['to'] = $email;
+                    $data['to'] = $correoUsr;
                     $data['priority'] = '2';
                     $data['tipo'] = 'Servicio';
                     $data['subject'] = 'Respuesta de servicio';
@@ -803,10 +811,10 @@ class API extends Controller
                     $mail->customMailUnique();
                 } else if ( $status === '2.5' ) {
 
-                    $data['name'] = '';
+                    $data['name'] = $usuario;
                     //Send to queue email list of administrator mail
                     $data['user_id'] = '1';
-                    $data['to'] = $email;
+                    $data['to'] = $correoUsr;
                     $data['priority'] = '2';
                     $data['tipo'] = 'Servicio';
                     $data['subject'] = 'Respuesta de servicio';

@@ -61,6 +61,8 @@ class Servicios extends Model
           CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr,
           abogado.id_dispositivo AS idDispositivoAbo,
           usuarios.id_dispositivo AS idDispositivoUsr,
+          usuarios.correo AS correoUsr,
+          abogado.correo AS correoAbo,
           abogado.cedula as cedulaAbo'
       )
         ->where([
@@ -87,6 +89,8 @@ class Servicios extends Model
           CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo,
           abogado.id_dispositivo AS idDispositivoAbo,
           usuarios.id_dispositivo AS idDispositivoUsr,
+          usuarios.correo AS correoUsr,
+          abogado.correo AS correoAbo,
           abogado.cedula as cedulaAbo'
       )
         ->where([
