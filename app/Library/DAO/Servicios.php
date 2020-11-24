@@ -50,11 +50,13 @@ class Servicios extends Model
       // $pass = hash("sha256", $pass);
 
       if ( $tUsuario == 0 ){
+        //Usuario
         //activar log query
         DB::connection()->enableQueryLog();
           
         $sql = $query->leftJoin('abogado', 'abogado.id_abogado', '=', 'servicios.id_abogado')
         ->leftJoin('usuarios', 'usuarios.id_usuarios', '=', 'servicios.id_usuarios')
+        ->leftJoin('empresa', 'empresa.id_empresa', '=', 'servicios.id_despacho')
         ->selectRaw(
           'servicios.*,
           CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo,
@@ -63,7 +65,8 @@ class Servicios extends Model
           usuarios.id_dispositivo AS idDispositivoUsr,
           usuarios.correo AS correoUsr,
           abogado.correo AS correoAbo,
-          abogado.cedula as cedulaAbo'
+          abogado.cedula as cedulaAbo,
+          empresa.nombre_empresa as nombreEmpresa'
       )
         ->where([
           ['servicios.id_usuarios', '=', $id_user],
@@ -78,11 +81,13 @@ class Servicios extends Model
         return $sql;
 
       } else if ( $tUsuario == 1 ) {
+        //Abogado
         //activar log query
         DB::connection()->enableQueryLog();
   
         $sql = $query->leftJoin('usuarios', 'usuarios.id_usuarios', '=', 'servicios.id_usuarios')
         ->leftJoin('abogado', 'abogado.id_abogado', '=', 'servicios.id_abogado')
+        ->leftJoin('empresa', 'empresa.id_empresa', '=', 'servicios.id_empresa')
         ->selectRaw(
           'servicios.*,
           CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr,
@@ -91,7 +96,8 @@ class Servicios extends Model
           usuarios.id_dispositivo AS idDispositivoUsr,
           usuarios.correo AS correoUsr,
           abogado.correo AS correoAbo,
-          abogado.cedula as cedulaAbo'
+          abogado.cedula as cedulaAbo,
+          empresa.nombre_empresa as nombreEmpresa'
       )
         ->where([
           ['servicios.id_abogado', '=', $id_user],
@@ -110,7 +116,7 @@ class Servicios extends Model
       
     }
 
-    public function scopeServicePost($query, $id_abogado, $id_usuario, $servicio, $descripcion){
+    public function scopeServicePost($query, $id_abogado, $id_usuario, $id_despacho, $id_empresa, $servicio, $descripcion){
 
       Log::info("[Usuarios][scopeCreateUser]");
 
@@ -118,6 +124,8 @@ class Servicios extends Model
 
       $usuarios->id_abogado = $id_abogado;
       $usuarios->id_usuarios = $id_usuario;
+      $usuarios->id_despacho = $id_despacho;
+      $usuarios->id_empresa = $id_empresa;
       $usuarios->precio = '500';
       $usuarios->tipo_servicio = $servicio;
       $usuarios->descripcion = $descripcion;

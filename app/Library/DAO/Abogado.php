@@ -291,8 +291,8 @@ class Abogado extends Model
 
     public function scopeGetActivoLaw($query, $id_usuario){
 
-      Log::info("[Contacto_emergencia][scopeGetImg]");
-      Log::info("[Contacto_emergencia][scopeGetImg] ID Usuario:" .  $id_usuario);
+      Log::info("[Abogado][scopeGetActivoLaw]");
+      Log::info("[Abogado][scopeGetActivoLaw] ID Usuario:" .  $id_usuario);
 
       // $pass = hash("sha256", $pass);
 

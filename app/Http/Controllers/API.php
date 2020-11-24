@@ -555,7 +555,7 @@ class API extends Controller
             Log::info('[APIUsuarios][SMS2] Celular: ' . $celular);
 
             $sms = new SMS();
-            $status = $sms->enviarMensaje('Legal Partners: Haz recibidio una solicitud de servicio de abogado','+52'. $celular);
+            $status = $sms->enviarMensaje('Legal Partners: Has recibidio una solicitud de servicio de abogado','+52'. $celular);
             Log::info('[APIUsuarios][SMS2] Mensaje enviado');
 
             $obj = Array();

@@ -229,15 +229,19 @@ class APIUserNormal extends Controller
 
             $id_abogado = $request->input('id_abogado');
             $id_usuario = $request->input('id_usuario');
+            $id_despacho = $request->input('id_despacho');
+            $id_empresa = $request->input('id_empresa');
             $servicio = $request->input('servicio');
             $descripcion = $request->input('descripcion');
 
             Log::info("[APIUserNormal][registar] ID Abogado: ". $id_abogado);
             Log::info("[APIUserNormal][registar] ID Usuario: ". $id_usuario);
+            Log::info("[APIUserNormal][registar] ID Despacho: ". $id_despacho);
+            Log::info("[APIUserNormal][registar] ID Empresa: ". $id_empresa);
             Log::info("[APIUserNormal][registar] Servicio: ". $servicio);
             Log::info("[APIUserNormal][registar] Descripcion: ". $descripcion);
 
-            $usuario = Servicios::servicePost($id_abogado, $id_usuario, $servicio, $descripcion);
+            $usuario = Servicios::servicePost($id_abogado, $id_usuario, $id_despacho, $id_empresa, $servicio, $descripcion);
             Log::info($usuario);
 
             if($usuario[0]->save == 1){

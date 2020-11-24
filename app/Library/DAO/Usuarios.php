@@ -168,8 +168,8 @@ class Usuarios extends Model
 
     public function scopeGetActivoLaw($query, $id_usuario){
 
-      Log::info("[Contacto_emergencia][scopeGetImg]");
-      Log::info("[Contacto_emergencia][scopeGetImg] ID Usuario:" .  $id_usuario);
+      Log::info("[Usuarios][scopeGetActivoUser]");
+      Log::info("[Usuarios][scopeGetActivoUser] ID Usuario:" .  $id_usuario);
 
       // $pass = hash("sha256", $pass);
 
@@ -177,9 +177,10 @@ class Usuarios extends Model
       //activar log query
       DB::connection()->enableQueryLog();
 
-      $sql = $query->where([
+      $sql = $query->select('activo')
+      ->where([
         ['id_usuarios', '=', $id_usuario]
-      ])->select('activo')->get();
+      ])->get();
 
 
       //log query
