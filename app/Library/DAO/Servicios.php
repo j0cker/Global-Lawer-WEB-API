@@ -20,7 +20,7 @@ class Servicios extends Model
     const UPDATED_AT = 'updated_at';
     //public $attributes;
 
-    public function scopeGetServicio($query, $id_abogado){
+    public function scopeGetServicio($query, $tipo_usuario, $id_abogado){
 
         Log::info("[Abogado][scopeGetServicio]");
 
@@ -30,9 +30,36 @@ class Servicios extends Model
         //activar log query
         DB::connection()->enableQueryLog();
 
-        $sql = $query->where([
-          ['id_abogado', '=', $id_abogado],
-        ])->get();
+        if( $tipo_usuario === '1') {
+
+          $sql = $query->leftJoin('abogado', 'abogado.id_abogado', '=', 'servicios.id_abogado')
+          ->leftJoin('usuarios', 'usuarios.id_usuarios', '=', 'servicios.id_usuarios')
+          ->selectRaw(
+            'servicios.*,
+            CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo,
+            CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr,
+            abogado.id_dispositivo AS idDispositivoAbo,
+            usuarios.id_dispositivo AS idDispositivoUsr'
+        )
+          ->where([
+            ['servicios.id_abogado', '=', $id_abogado],
+          ])->get();
+        } else if( $tipo_usuario === '0') {
+
+          $sql = $query->leftJoin('abogado', 'abogado.id_abogado', '=', 'servicios.id_abogado')
+          ->leftJoin('usuarios', 'usuarios.id_usuarios', '=', 'servicios.id_usuarios')
+          ->selectRaw(
+            'servicios.*,
+            CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo,
+            CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr,
+            abogado.id_dispositivo AS idDispositivoAbo,
+            usuarios.id_dispositivo AS idDispositivoUsr'
+        )
+          ->where([
+            ['servicios.id_usuarios', '=', $id_abogado],
+          ])->get();
+        }
+
 
         //log query
         $queries = DB::getQueryLog();
@@ -42,6 +69,29 @@ class Servicios extends Model
         return $sql;
 
     }
+
+    public function scopeGetServicioUsuario($query, $id_ususarios){
+
+      Log::info("[Servicios][scopeGetServicioUsuario]");
+
+      // $pass = hash("sha256", $pass);
+
+
+      //activar log query
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_ususarios', '=', $id_ususarios],
+      ])->get();
+
+      //log query
+      $queries = DB::getQueryLog();
+      $last_query = end($queries);
+      Log::info($last_query);
+
+      return $sql;
+
+  }
 
     public function scopeGetServices($query, $tUsuario, $id_user, $status){
 
@@ -129,6 +179,7 @@ class Servicios extends Model
       $usuarios->precio = '500';
       $usuarios->tipo_servicio = $servicio;
       $usuarios->descripcion = $descripcion;
+      $usuarios->title = $servicio . ': ' . $descripcion;
 
       $obj = Array();
       $obj[0] = new \stdClass();

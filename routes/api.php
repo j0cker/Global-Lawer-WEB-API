@@ -80,6 +80,9 @@ Route::get('/normal_user/servicePost2', 'APIUserNormal@ServicePost2');
 // Actualizar Usuario
 Route::get('/normal_user/updateUser', 'APIUserNormal@UpdateUser');
 
+// Get Servicio
+Route::get('/normal_user/getService', 'APIUserNormal@GetService');
+
 /* 
 ******************** End Points Abogados ********************
 */

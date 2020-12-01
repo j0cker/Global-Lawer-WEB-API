@@ -418,7 +418,7 @@ class APILawyer extends Controller
 
             Log::info("[APILawyer][GetService] ID Abogado: ". $id_abogado);
 
-            $usuario = Servicios::getServicio($id_abogado);
+            $usuario = Servicios::getServicio('1', $id_abogado);
         
             Log::info($usuario);
     

@@ -507,4 +507,47 @@ class APIUserNormal extends Controller
 
         }
     }
+
+    public function GetService(Request $request) {
+     
+        Log::info('[APIUserNormal][GetService]');
+
+        Log::info("[APIUserNormal][GetService] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $id_usuario = $request->input('id_usuario');
+
+            Log::info("[APIUserNormal][GetService] ID Usuario: ". $id_usuario);
+
+            $usuario = Servicios::getServicio('0', $id_usuario);
+        
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+            
+            $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+            $responseJSON->data = $usuario;
+            return json_encode($responseJSON);
+    
+            } else {
+    
+            $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($usuario));
+            $responseJSON->data = [];
+            return json_encode($responseJSON);
+    
+            }
+
+        }
+    }
 }
