@@ -65,10 +65,17 @@ class Abogado extends Model
         //activar log query
         DB::connection()->enableQueryLog();
 
-        $sql = $query->where([
-          ['activo', '=', '1'],
-          ['visible', '=', '1']
-        ])->get();
+        $sql = $query->leftJoin('servicios', 'servicios.id_abogado', '=', 'abogado.id_abogado')
+        ->selectRaw(
+          'abogado.*,
+          COUNT(servicios.id_servicios) AS countServ'
+        )
+        ->where([
+          ['abogado.activo', '=', '1'],
+          ['abogado.visible', '=', '1']
+        ])
+        ->groupBy('abogado.id_abogado')
+        ->get();
 
         //log query
         $queries = DB::getQueryLog();

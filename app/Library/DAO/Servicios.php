@@ -91,7 +91,7 @@ class Servicios extends Model
 
       return $sql;
 
-  }
+    }
 
     public function scopeGetServices($query, $tUsuario, $id_user, $status){
 
@@ -259,7 +259,7 @@ class Servicios extends Model
 
       return $sql;
 
-  }
+    }
 
 }
 ?>
