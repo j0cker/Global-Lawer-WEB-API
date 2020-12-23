@@ -396,6 +396,49 @@ class APILawyer extends Controller
         }
     }
 
+    public function GetChatService(Request $request) {
+     
+        Log::info('[APILawyer][getChatService]');
+
+        Log::info("[APILawyer][getChatService] Método Recibido: ". $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            /*
+            Validator::make($request->all(), [
+                'token' => 'required'
+            ])->validate();
+            */
+
+            $id_abogado = $request->input('id_abogado');
+
+            Log::info("[APILawyer][getChatService] ID Abogado: ". $id_abogado);
+
+            $usuario = Servicios::getChatServicio('1', $id_abogado);
+        
+            Log::info($usuario);
+    
+            if(count($usuario)>0){
+            
+            $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+            $responseJSON->data = $usuario;
+            return json_encode($responseJSON);
+    
+            } else {
+    
+            $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($usuario));
+            $responseJSON->data = [];
+            return json_encode($responseJSON);
+    
+            }
+
+        }
+    }
+
     public function GetService(Request $request) {
      
         Log::info('[APILawyer][GetService]');

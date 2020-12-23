@@ -20,6 +20,56 @@ class Servicios extends Model
     const UPDATED_AT = 'updated_at';
     //public $attributes;
 
+    public function scopeGetChatServicio($query, $tipo_usuario, $id_abogado){
+
+      Log::info("[Abogado][scopeGetChatServicio]");
+
+      // $pass = hash("sha256", $pass);
+
+
+      //activar log query
+      DB::connection()->enableQueryLog();
+
+      if( $tipo_usuario === '1') {
+
+        $sql = $query->leftJoin('abogado', 'abogado.id_abogado', '=', 'servicios.id_abogado')
+        ->leftJoin('usuarios', 'usuarios.id_usuarios', '=', 'servicios.id_usuarios')
+        ->selectRaw(
+          'servicios.*,
+          CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo,
+          CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr,
+          abogado.id_dispositivo AS idDispositivoAbo,
+          usuarios.id_dispositivo AS idDispositivoUsr'
+      )
+        ->where([
+          ['servicios.id_abogado', '=', $id_abogado],
+        ])->get();
+      } else if( $tipo_usuario === '0') {
+
+        $sql = $query->leftJoin('abogado', 'abogado.id_abogado', '=', 'servicios.id_abogado')
+        ->leftJoin('usuarios', 'usuarios.id_usuarios', '=', 'servicios.id_usuarios')
+        ->selectRaw(
+          'servicios.*,
+          CONCAT(abogado.nombre, " ", abogado.apellido) AS nombreCompletoAbo,
+          CONCAT(usuarios.nombre, " ", usuarios.apellido) AS nombreCompletoUsr,
+          abogado.id_dispositivo AS idDispositivoAbo,
+          usuarios.id_dispositivo AS idDispositivoUsr'
+      )
+        ->where([
+          ['servicios.id_usuarios', '=', $id_abogado],
+        ])->get();
+      }
+
+
+      //log query
+      $queries = DB::getQueryLog();
+      $last_query = end($queries);
+      Log::info($last_query);
+
+      return $sql;
+
+  }
+
     public function scopeGetServicio($query, $tipo_usuario, $id_abogado){
 
         Log::info("[Abogado][scopeGetServicio]");

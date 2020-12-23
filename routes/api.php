@@ -102,6 +102,9 @@ Route::get('/lawyer/getLaw', 'APILawyer@GetLaw');
 // Get Servicio
 Route::get('/lawyer/getService', 'APILawyer@GetService');
 
+// Get Chat Servicio
+Route::get('/lawyer/getChatService', 'APILawyer@GetChatService');
+
 // Cambiar Status Pedidos
 Route::get('/lawyer/changeStatusServicio', 'API@ChangeStatusServicio');
 

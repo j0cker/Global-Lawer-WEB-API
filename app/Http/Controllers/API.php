@@ -1012,23 +1012,21 @@ class API extends Controller
 
         if($request->isMethod('GET')) {
 
-            /*
             header('Access-Control-Allow-Origin: *');
+            /*
             header('Access-Control-Allow-Methods: *');
             header('Access-Control-Allow-Headers: *');
             */
 
-            $this->validate($request, [
-                'celular' => 'required',
-                'password' => 'required'
-              ]);
+              $usuario = $request->input('usuario');
+              $celular = $request->input('celular');
+              $password = $request->input('password');
+              
+              Log::info('[API][ChangePassword] Usuario: '. $usuario);
+              Log::info('[API][ChangePassword] Celular: '. $celular);
+              Log::info('[API][ChangePassword] Password: '. $password);
 
-            Log::info('[API][ChangePassword] Conectado');
-            $usuario = $request->input('usuario');
-            $celular = $request->input('celular');
-            $password = $request->input('password');
-
-            if( $usuario == '0' ) {
+              if( $usuario == '0' ) {
                 $usuario = Usuarios::changePassword($celular,$password);
             } else if( $usuario == '1' ) {
                 $usuario = Abogado::changePassword($celular,$password);
