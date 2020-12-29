@@ -68,7 +68,7 @@ class Servicios extends Model
 
       return $sql;
 
-  }
+    }
 
     public function scopeGetServicio($query, $tipo_usuario, $id_abogado){
 

@@ -62,6 +62,9 @@ Route::post('/notifications', 'API@PushNotification');
 //Update ID Dispositivo
 Route::get('/updateIdDispositivo', 'API@UpdateIdDispositivo');
 
+// Verificar celular
+Route::get('/verificarCel', 'API@VerificarCel');
+
 /* 
 ******************** End Points Normal User ********************
 */

@@ -1052,4 +1052,50 @@ class API extends Controller
         }
     }
 
+    public function VerificarCel(Request $request){
+
+        Log::info('[API][Verificar Celular]');
+
+        Log::info('[API][verificar Celular] Método Recibido: '. $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            $tipo_usuario = $request->input(('tipo_usuario'));
+            $celular = $request->input('celular');
+
+            Log::info('[API][Verificar Celular] Tipo usuario: ' . $tipo_usuario);
+            Log::info('[API][Verificar Celular] Celular: ' . $celular);
+
+            if ($tipo_usuario == '0'){
+
+                $user = Usuarios::lookForByCel($celular)->get();
+            } else if ($tipo_usuario == '1'){
+
+                $user = Abogado::lookForByCel($celular)->get();
+            }
+ 
+            Log::info($user);
+
+            if(count($user)>0){
+
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($user));
+                $responseJSON->data = $user;
+
+                return json_encode($responseJSON);
+                
+                } else {
+                
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($user));
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+                
+            }
+        }
+        
+    }
+
 }

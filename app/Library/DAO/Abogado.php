@@ -393,5 +393,22 @@ class Abogado extends Model
         return $sql;
     }
 
+    public function scopeLookForByCel($query, $celular){
+
+      Log::info("[Usuarios][scopeLookForByCel]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['celular', '=', $celular]
+      ]);
+
+      $queries = DB::getQueryLog();
+      $last_query = end($queries);
+      Log::info($last_query);
+
+      return $sql;
+
+    }
+
 }
 ?>
