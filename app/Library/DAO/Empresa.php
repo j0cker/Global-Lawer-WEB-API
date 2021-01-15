@@ -99,9 +99,14 @@ class Empresa extends Model
       //activar log query
       DB::connection()->enableQueryLog();
 
-      $sql = $query->where([
-        ['id_usuarios', '=', '0'],
-        ['activo', '=', '1']
+      $sql = $query->leftJoin('abogado', 'abogado.id_abogado', '=', 'empresa.id_abogado')
+        ->selectRaw(
+          'empresa.*,
+          abogado.id_dispositivo AS idDispositivoAbo'
+        )
+        ->where([
+        ['empresa.id_usuarios', '=', '0'],
+        ['empresa.activo', '=', '1']
       ])->get();
 
       //log query
