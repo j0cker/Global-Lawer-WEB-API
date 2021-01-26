@@ -146,5 +146,23 @@ class Empresa extends Model
       return $sql;
     }
 
+    public function scopeDeleteEmpresa($query, $idEmpresa){
+
+      Log::info("[Empresa][scopeDeleteEmpresa]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+      ['id_empresa', '=', $idEmpresa],
+      ])->delete(); //return true in the other one return 1
+
+      //log query
+      $queries = DB::getQueryLog();
+      $last_query = end($queries);
+      Log::info($last_query);
+
+      return $sql;
+        
+    }
+
 }
 ?>

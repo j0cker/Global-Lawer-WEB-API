@@ -1098,4 +1098,41 @@ class API extends Controller
         
     }
 
+    public function DeleteEmpresa(Request $request){
+
+        Log::info('[API][DeleteEmpresa]');
+
+        Log::info('[API][DeleteEmpresa] Método Recibido: '. $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            $id_empresa = $request->input(('idEmpresa'));
+
+            Log::info('[API][DeleteEmpresa] ID Empresa: ' . $id_empresa);
+
+            $user = Empresa::deleteEmpresa($id_empresa)->get();
+            Log::info($user);
+
+            if($user == 1){
+
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($user));
+                $responseJSON->data = $user;
+
+                return json_encode($responseJSON);
+                
+                } else {
+                
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), count($user));
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+                
+            }
+        }
+        
+    }
+
 }
