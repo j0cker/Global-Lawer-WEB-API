@@ -179,7 +179,7 @@ class Abogado extends Model
         return $obj;
     }
 
-    public function scopeUpdateLaw( $query, $id_abogado, $acercaDe, $nombre, $apellido ){
+    public function scopeUpdateLaw( $query, $id_abogado, $acercaDe, $nombre, $apellido, $disponibilidad ){
 
       Log::info("[Usuarios][scopeUpdateLaw]");
       DB::connection()->enableQueryLog();
@@ -189,7 +189,8 @@ class Abogado extends Model
         ])->update([
           'acerca_de' => $acercaDe,
           'nombre' => $nombre,
-          'apellido' => $apellido
+          'apellido' => $apellido,
+          'disponibilidad' => $disponibilidad
         ]);
 
         //log query

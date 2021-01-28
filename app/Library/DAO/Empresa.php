@@ -164,5 +164,29 @@ class Empresa extends Model
         
     }
 
+    public function scopeUpdateEmpresa($query, $id_empresa, $nombre, $corrreoResponsable, $telefono, $giro, $tiempoConstitucion, $acercaDe ){
+
+      Log::info("[Usuarios][scopeUpdateLaw]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_empresa', '=', $idEmpresa],
+        ])->update([
+          'nombre_empresa' => $nombre,
+          'correo' => $corrreoResponsable,
+          'telefono' => $telefono,
+          'giro' => $giro,
+          'constitucion' => $tiempoConstitucion,
+          'acercaDe' => $acercaDe
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+    }
+
 }
 ?>

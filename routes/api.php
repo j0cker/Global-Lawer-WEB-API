@@ -65,6 +65,12 @@ Route::get('/updateIdDispositivo', 'API@UpdateIdDispositivo');
 // Verificar celular
 Route::get('/verificarCel', 'API@VerificarCel');
 
+// Eliminar empresa
+Route::get('/deleteEmpresa', 'API@DeleteEmpresa');
+
+// Actualizar Empresa
+Route::get('/updateEmpresa', 'API@UpdateEmpresa');
+
 /* 
 ******************** End Points Normal User ********************
 */
