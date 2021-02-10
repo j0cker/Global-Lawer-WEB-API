@@ -164,7 +164,7 @@ class Empresa extends Model
         
     }
 
-    public function scopeUpdateEmpresa($query, $id_empresa, $nombre, $corrreoResponsable, $telefono, $giro, $tiempoConstitucion, $acercaDe ){
+    public function scopeUpdateEmpresa($query, $idEmpresa, $nombre, $corrreoResponsable, $telefono, $giro, $tiempoConstitucion, $acercaDe ){
 
       Log::info("[Usuarios][scopeUpdateLaw]");
       DB::connection()->enableQueryLog();
@@ -187,6 +187,7 @@ class Empresa extends Model
 
         return $sql;
     }
+    // Linea de comprobacion
 
 }
 ?>
