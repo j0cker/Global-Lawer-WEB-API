@@ -1098,4 +1098,90 @@ class API extends Controller
         
     }
 
+    public function DeleteEmpresa(Request $request){
+
+        Log::info('[API][DeleteEmpresa]');
+
+        Log::info('[API][DeleteEmpresa] Método Recibido: '. $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            $id_empresa = $request->input(('idEmpresa'));
+
+            Log::info('[API][DeleteEmpresa] ID Empresa: ' . $id_empresa);
+
+            $usuario = Empresa::deleteEmpresa($id_empresa);
+
+            Log::info($usuario);
+
+            if($usuario == 1){
+
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+                    
+            } else {
+                
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), 0);
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+                
+            }
+        }
+        
+    }
+
+    public function UpdateEmpresa(Request $request){
+
+        Log::info('[API][UpdateEmpresa]');
+
+        Log::info('[API][UpdateEmpresa] Método Recibido: '. $request->getMethod());
+
+        if($request->isMethod('GET')) {
+
+            header('Access-Control-Allow-Origin: *');
+            // header('Access-Control-Allow-Methods: *');
+            // header('Access-Control-Allow-Headers: *');
+
+            $id_empresa = $request->input(('idEmpresa'));
+            $nombre = $request->input(('nombre'));
+            $corrreoResponsable = $request->input(('corrreoResponsable'));
+            $telefono = $request->input(('telefono'));
+            $giro = $request->input(('giro'));
+            $tiempoConstitucion = $request->input(('tiempoConstitucion'));
+            $acercaDe = $request->input(('acercaDe'));
+
+            Log::info('[API][UpdateEmpresa] ID Empresa: ' . $id_empresa);
+            Log::info('[API][UpdateEmpresa] Nombre: ' . $nombre);
+            Log::info('[API][UpdateEmpresa] Correo: ' . $corrreoResponsable);
+            Log::info('[API][UpdateEmpresa] Teléfono: ' . $telefono);
+            Log::info('[API][UpdateEmpresa] Giro: ' . $giro);
+            Log::info('[API][UpdateEmpresa] Constitución: ' . $tiempoConstitucion);
+            Log::info('[API][UpdateEmpresa] Acerca de: ' . $acercaDe);
+
+            $usuario = Empresa::updateEmpresa($id_empresa, $nombre, $corrreoResponsable, $telefono, $giro, $tiempoConstitucion, $acercaDe);
+
+            Log::info($usuario);
+
+            if($usuario == 1){
+
+                $responseJSON = new ResponseJSON(Lang::get('messages.successTrue'),Lang::get('messages.BDsuccess'), count($usuario));
+                $responseJSON->data = $usuario;
+                return json_encode($responseJSON);
+                    
+            } else {
+                
+                $responseJSON = new ResponseJSON(Lang::get('messages.successFalse'),Lang::get('messages.errorsBD'), 0);
+                $responseJSON->data = [];
+                return json_encode($responseJSON);
+                
+            }
+        }
+        
+    }
+
 }

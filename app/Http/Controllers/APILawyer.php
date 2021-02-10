@@ -504,13 +504,15 @@ class APILawyer extends Controller
             $acercaDe = $request->input('acercaDe');
             $nombre = $request->input('nombre');
             $apellido = $request->input('apellido');
+            $disponibilidad = $request->input('disponibilidad');
 
             Log::info("[APILawyer][UpdateLaw] ID Abogado: ". $id_abogado);
             Log::info("[APILawyer][UpdateLaw] Acerca de: ". $acercaDe);
             Log::info("[APILawyer][UpdateLaw] Nombre: ". $nombre);
             Log::info("[APILawyer][UpdateLaw] Apellido: ". $apellido);
+            Log::info("[APILawyer][UpdateLaw] Disponibilidad: ". $disponibilidad);
 
-            $usuario = Abogado::updateLaw($id_abogado, $acercaDe, $nombre, $apellido);
+            $usuario = Abogado::updateLaw($id_abogado, $acercaDe, $nombre, $apellido, $disponibilidad);
         
             Log::info($usuario);
     

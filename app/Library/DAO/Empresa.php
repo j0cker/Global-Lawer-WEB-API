@@ -99,9 +99,14 @@ class Empresa extends Model
       //activar log query
       DB::connection()->enableQueryLog();
 
-      $sql = $query->where([
-        ['id_usuarios', '=', '0'],
-        ['activo', '=', '1']
+      $sql = $query->leftJoin('abogado', 'abogado.id_abogado', '=', 'empresa.id_abogado')
+        ->selectRaw(
+          'empresa.*,
+          abogado.id_dispositivo AS idDispositivoAbo'
+        )
+        ->where([
+        ['empresa.id_usuarios', '=', '0'],
+        ['empresa.activo', '=', '1']
       ])->get();
 
       //log query
@@ -140,6 +145,49 @@ class Empresa extends Model
 
       return $sql;
     }
+
+    public function scopeDeleteEmpresa($query, $idEmpresa){
+
+      Log::info("[Empresa][scopeDeleteEmpresa]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+      ['id_empresa', '=', $idEmpresa],
+      ])->delete(); //return true in the other one return 1
+
+      //log query
+      $queries = DB::getQueryLog();
+      $last_query = end($queries);
+      Log::info($last_query);
+
+      return $sql;
+        
+    }
+
+    public function scopeUpdateEmpresa($query, $idEmpresa, $nombre, $corrreoResponsable, $telefono, $giro, $tiempoConstitucion, $acercaDe ){
+
+      Log::info("[Usuarios][scopeUpdateLaw]");
+      DB::connection()->enableQueryLog();
+
+      $sql = $query->where([
+        ['id_empresa', '=', $idEmpresa],
+        ])->update([
+          'nombre_empresa' => $nombre,
+          'correo' => $corrreoResponsable,
+          'telefono' => $telefono,
+          'giro' => $giro,
+          'constitucion' => $tiempoConstitucion,
+          'acercaDe' => $acercaDe
+        ]);
+
+        //log query
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        Log::info($last_query);
+
+        return $sql;
+    }
+    // Linea de comprobacion
 
 }
 ?>
