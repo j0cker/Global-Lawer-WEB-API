@@ -11,25 +11,25 @@ use DB;
 update and insert doesnt need get->()
 */
 
-class ValoracionUsuario extends Model
+class ValoracionAbogado extends Model
 {
-    public $table = 'valoracion_usuario';
+    public $table = 'valoracion_abogado';
     public $timestamps = true;
     //protected $dateFormat = 'U';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
     //public $attributes;
 
-    public function scopeValoracionPost($query, $id_servicios, $id_abogado, $id_usuario, $rating){
+    public function scopeValoracionPost($query, $id_servicios, $id_usuario, $rating){
 
-        Log::info("[ValoracionUsuario][scopeValoracionPost]");
+        Log::info("[ValoracionAbogado][scopeValoracionPost]");
   
         $usuarios = new ValoracionUsuario();
   
         $usuarios->id_servicios = $id_servicios;
         $usuarios->id_abogado = $id_abogado;
         $usuarios->id_usuarios = $id_usuario;
-        $usuarios->rating_usuario = $rating;
+        $usuarios->rating_abogado = $rating;
   
         $obj = Array();
         $obj[0] = new \stdClass();

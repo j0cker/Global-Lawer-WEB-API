@@ -18,6 +18,7 @@ use App\Library\DAO\Servicios;
 use App\Library\DAO\Abogado;
 use App\Library\DAO\Empresa;
 use App\Library\DAO\ValoracionUsuario;
+use App\Library\DAO\ValoracionAbogado;
 use App\Library\DAO\Permisos_inter;
 use App\Library\VO\ResponseJSON;
 use Session;
@@ -460,15 +461,24 @@ class API extends Controller
               //Log::info('[APIUserNormal][registrar]2');
             
             $id_servicios = $request->input('id_servicios');
+            $id_abogado = $request->input('id_abogado');
             $id_usuario = $request->input('id_usuario');
             $rating = $request->input('rating');
+            $status = $request->input('status');
 
             Log::info("[API][Valoracion] ID Servicios: ". $id_servicios);
+            Log::info("[API][Valoracion] ID Abogado: ". $id_abogado);
             Log::info("[API][Valoracion] ID Usuario: ". $id_usuario);
             Log::info("[API][Valoracion] Rating: ". $rating);
-        
-                
-            $usuario = ValoracionUsuario::valoracionPost($id_servicios, $id_usuario, $rating);
+            Log::info("[API][Valoracion] Status: ". $status);
+
+            if ( $status == '4') {
+                // Valoracion de Abogado a Usuario
+                $usuario = ValoracionUsuario::valoracionPost($id_servicios, $id_abogado, $id_usuario, $rating);
+            } else if ( $status == '5') {
+                // Valoracion de Usuario a Abogado
+                $usuario = ValoracionAbogado::valoracionPost($id_servicios, $id_abogado, $id_usuario, $rating);
+            }
             Log::info($usuario);
     
             if($usuario[0]->save == 1){
